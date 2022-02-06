@@ -43,7 +43,8 @@ def vehicle_menu():
     choice = input("Enter Choice: ")
 
     if choice == "1":
-        print("Not Implemented")
+        new_vehicle = get_new_vehicle_details()
+        print(new_vehicle)
     elif choice == "2":
         print("Not Implemented")
     elif choice == "3":
@@ -110,6 +111,24 @@ def report_menu():
         main_menu()
     else:
         print("Invalid choice !!!")
+
+
+def get_new_vehicle_details():
+    """
+    Get vehicle details from user and return as a dictionary object
+    """
+    registration = input("Enter vehicle registration: ")
+    make = input("Enter make: ")
+    model = input("Enter model: ")
+    mileage = input("Enter current mileage: ")
+
+    vehicle = {
+        "reg": registration,
+        "make": make,
+        "model": model,
+        "mileage": mileage 
+    }
+    return vehicle
 
 
 def main():
