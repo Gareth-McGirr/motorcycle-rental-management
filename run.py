@@ -1,3 +1,17 @@
-# Your code goes here.
-# You can delete these comments, but do not change the name of this file
-# Write your code to expect a terminal of 80 characters wide and 24 rows high
+def display_main_menu():
+    """
+    Displays the main menu ion the terminal
+    """
+    
+    print("1. Vehicles")
+    print("2. Bookings")
+    print("3. Reports\n")
+
+def main():
+    """
+    Run all program functions
+    """
+    display_main_menu()
+
+print("\n\nWelcome to Motorcycle Rental Management.\n")
+main()
