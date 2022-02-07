@@ -4,14 +4,17 @@ from pymongo import MongoClient
 if os.path.exists("env.py"):
     import env
 
+
 cluster = os.environ.get("CLUSTER")
 
 client = MongoClient(cluster)
+
 
 def main_menu():
     """
     Displays the main menu ion the terminal
     """
+
     os.system('clear')
     print("MAIN MENU")
     print("---------------")  
@@ -52,13 +55,14 @@ def vehicle_menu():
 
     if choice == "1":
         new_vehicle = get_new_vehicle_details()
+        # TO DO: get user to verify details before saving to DB
         save_vehicle_details(new_vehicle)
     elif choice == "2":
         print("Not Implemented")
     elif choice == "3":
         print("Not Implemented")
     elif choice == "4":
-        print("Not Implemented")
+        list_all_vehicles()
     elif choice == "0":
         main_menu()
     else:
@@ -128,24 +132,52 @@ def get_new_vehicle_details():
     registration = input("Enter vehicle registration: ")
     make = input("Enter make: ")
     model = input("Enter model: ")
-    mileage = input("Enter current mileage: ")
-
+    while True:
+        try:
+            mileage = int(input("Enter current mileage: "))
+            break
+        except:
+            print("Only whole numbers can be entered !")
+    while True:
+        try:
+            service_interval = int(input("Enter service interval: "))
+            break
+        except:
+            print("Only whole numbers can be entered !") 
+    next_service_due = mileage + service_interval
+    miles_left_until_service = next_service_due - mileage
+    #create a dictionary to store vehicle details  
     vehicle = {
         "reg": registration,
         "make": make,
         "model": model,
-        "mileage": mileage 
+        "mileage": mileage,
+        "service_intervals": service_interval,
+        "service_due_distance": miles_left_until_service
     }
     return vehicle
 
 
-def save_vehicle_details(vehicle_dict_string):
+def save_vehicle_details(vehicle_dict):
     """
     save the vehicle details to database
     """
     db = client.rentalsDB
     vehicles = db.vehicles
-    result = vehicles.insert_one(vehicle_dict_string)
+    result = vehicles.insert_one(vehicle_dict)
+    print(result)
+
+
+def list_all_vehicles():
+    """
+    Gets a list of all the vehicles in inventory
+    """
+    db = client.rentalsDB
+    vehicles = db.vehicles
+    results = vehicles.find({})
+    for result in results:
+        print(result)
+
 
 def main():
     """
