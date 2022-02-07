@@ -1,8 +1,8 @@
 import os
 from pymongo import MongoClient
-
-if os.path.exists("env.py"):
-    import env
+import env
+# if os.path.exists("env.py"):
+#     import env
 
 
 cluster = os.environ.get("CLUSTER")
@@ -60,7 +60,7 @@ def vehicle_menu():
     elif choice == "2":
         print("Not Implemented")
     elif choice == "3":
-        print("Not Implemented")
+        remove_vehicle()
     elif choice == "4":
         list_all_vehicles()
     elif choice == "0":
@@ -146,7 +146,7 @@ def get_new_vehicle_details():
             print("Only whole numbers can be entered !") 
     next_service_due = mileage + service_interval
     miles_left_until_service = next_service_due - mileage
-    #create a dictionary to store vehicle details  
+    # create a dictionary to store vehicle details  
     vehicle = {
         "reg": registration,
         "make": make,
@@ -169,6 +169,7 @@ def save_vehicle_details(vehicle_dict):
 
 
 def list_all_vehicles():
+
     """
     Gets a list of all the vehicles in inventory
     """
@@ -176,7 +177,49 @@ def list_all_vehicles():
     vehicles = db.vehicles
     results = vehicles.find({})
     for result in results:
+        reg = result["reg"]
+        make = result["make"]
+        model = result["model"]
+        print()
+        print(f"Make: {make}")
+        print(f"Model: {model}")
+        print(f"Reg: {reg}")
+
+
+def remove_vehicle():
+    """
+    Get the user to enter registration, search database and remove item
+    """
+    registration = input("Enter reg: ")
+    if find_vehicle_by_reg(registration):
+        verify_delete = input("\n\nDo you want to delete? (y/n) : ")
+        if verify_delete == 'y':
+            db = client.rentalsDB
+            vehicles = db.vehicles
+            vehicles.delete_one({"reg": registration})
+            print("\nVehicle has been deleted")
+        else:
+            print("\nItem not deleted")
+
+
+
+    
+def find_vehicle_by_reg(registration):
+    """
+    Find the vehicle in database that matches the registration
+    """
+
+    db = client.rentalsDB
+    vehicles = db.vehicles
+    result = vehicles.find_one({"reg": registration})
+    print(f"result from search {result}")
+    if result is not None:
         print(result)
+        return True
+    else:
+        print("Not found !!!")
+        return False
+    
 
 
 def main():
@@ -184,6 +227,7 @@ def main():
     Run all program functions
     """
     main_menu()
+
 
 print("\n\nWelcome to Motorcycle Rental Management.\n")
 main()
