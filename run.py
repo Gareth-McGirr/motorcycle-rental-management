@@ -1,13 +1,13 @@
 import os
 from pymongo import MongoClient
+from pymongo.errors import OperationFailure
 if os.path.exists("env.py"):
     import env
 
 
 cluster = os.environ.get("CLUSTER")
-
 client = MongoClient(cluster)
-
+db = client.rentalsDB
 
 def main_menu():
     """
@@ -162,21 +162,34 @@ def save_vehicle_details(vehicle_dict):
     """
     save the vehicle details to database
     """
-    db = client.rentalsDB
-    vehicles = db.vehicles
-    result = vehicles.insert_one(vehicle_dict)
-    print(result)
+    try:
+        db.vehicles.insert_one(vehicle_dict)
+        return True
+    except OperationFailure:
+        print("oops ! Database error when adding file")
+        return False
+        
+    
+        
+
+    
 
 
 def list_all_vehicles():
-
     """
     Gets a list of all the vehicles in inventory
     """
-    db = client.rentalsDB
-    vehicles = db.vehicles
-    results = vehicles.find({})
-    for result in results:
+    try:
+        result = db.vehicles.find({})
+        print(result)
+    except OperationFailure:
+        print("oops ! Database error")
+    results_list = list(result)
+    if len(results_list) == 0:
+        print("No results found")
+
+    for result in results_list:
+        print("tring to print results- are results empty")
         reg = result["reg"]
         make = result["make"]
         model = result["model"]
@@ -184,6 +197,7 @@ def list_all_vehicles():
         print(f"Make: {make}")
         print(f"Model: {model}")
         print(f"Reg: {reg}")
+    
 
 
 def remove_vehicle():
@@ -194,30 +208,20 @@ def remove_vehicle():
     if find_vehicle_by_reg(registration):
         verify_delete = input("\n\nDo you want to delete? (y/n) : ")
         if verify_delete == 'y':
-            db = client.rentalsDB
-            vehicles = db.vehicles
-            vehicles.delete_one({"reg": registration})
+            db.vehicles.delete_one({"reg": registration})
             print("\nVehicle has been deleted")
         else:
             print("\nItem not deleted")
 
 
 
-    
+# Need to look at this again - nees to return the object !!!!   
 def find_vehicle_by_reg(registration):
     """
     Find the vehicle in database that matches the registration
-    """
-
-    db = client.rentalsDB
-    vehicles = db.vehicles
-    result = vehicles.find_one({"reg": registration})
-    if result is not None:
-        print(result)
-        return True
-    else:
-        print("Not found !!!")
-        return False
+    """   
+    result = db.vehicles.find_one({"reg": registration})
+    return result
     
 
 
