@@ -1,8 +1,7 @@
 import os
 from pymongo import MongoClient
-import env
-# if os.path.exists("env.py"):
-#     import env
+if os.path.exists("env.py"):
+    import env
 
 
 cluster = os.environ.get("CLUSTER")
@@ -129,9 +128,10 @@ def get_new_vehicle_details():
     """
     Get vehicle details from user and return as a dictionary object
     """
-    registration = input("Enter vehicle registration: ")
-    make = input("Enter make: ")
-    model = input("Enter model: ")
+    registration = (input("Enter vehicle registration: ")).upper()
+    make = (input("Enter make: ")).upper()  
+    model = (input("Enter model: ")).upper()
+    
     while True:
         try:
             mileage = int(input("Enter current mileage: "))
@@ -190,7 +190,7 @@ def remove_vehicle():
     """
     Get the user to enter registration, search database and remove item
     """
-    registration = input("Enter reg: ")
+    registration = (input("Enter reg: ")).upper()
     if find_vehicle_by_reg(registration):
         verify_delete = input("\n\nDo you want to delete? (y/n) : ")
         if verify_delete == 'y':
@@ -212,7 +212,6 @@ def find_vehicle_by_reg(registration):
     db = client.rentalsDB
     vehicles = db.vehicles
     result = vehicles.find_one({"reg": registration})
-    print(f"result from search {result}")
     if result is not None:
         print(result)
         return True
