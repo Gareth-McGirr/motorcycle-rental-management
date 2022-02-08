@@ -130,8 +130,7 @@ def get_new_vehicle_details():
     """
     registration = (input("Enter vehicle registration: ")).upper()
     make = (input("Enter make: ")).upper()  
-    model = (input("Enter model: ")).upper()
-    
+    model = (input("Enter model: ")).upper()   
     while True:
         try:
             mileage = int(input("Enter current mileage: "))
@@ -170,34 +169,27 @@ def save_vehicle_details(vehicle_dict):
         return False
         
     
-        
-
-    
-
-
 def list_all_vehicles():
     """
     Gets a list of all the vehicles in inventory
     """
     try:
         result = db.vehicles.find({})
-        print(result)
     except OperationFailure:
         print("oops ! Database error")
     results_list = list(result)
     if len(results_list) == 0:
         print("No results found")
-
-    for result in results_list:
-        print("tring to print results- are results empty")
-        reg = result["reg"]
-        make = result["make"]
-        model = result["model"]
-        print()
-        print(f"Make: {make}")
-        print(f"Model: {model}")
-        print(f"Reg: {reg}")
-    
+    else:
+        for result in results_list:
+            reg = result["reg"]
+            make = result["make"]
+            model = result["model"]
+            print()
+            print(f"Make: {make}")
+            print(f"Model: {model}")
+            print(f"Reg: {reg}")
+        
 
 
 def remove_vehicle():
@@ -205,13 +197,23 @@ def remove_vehicle():
     Get the user to enter registration, search database and remove item
     """
     registration = (input("Enter reg: ")).upper()
-    if find_vehicle_by_reg(registration):
+    result = find_vehicle_by_reg(registration)
+    if result is not None:
+        reg = result["reg"]
+        make = result["make"]
+        model = result["model"]
+        print()
+        print(f"Make: {make}")
+        print(f"Model: {model}")
+        print(f"Reg: {reg}")
         verify_delete = input("\n\nDo you want to delete? (y/n) : ")
         if verify_delete == 'y':
             db.vehicles.delete_one({"reg": registration})
             print("\nVehicle has been deleted")
         else:
             print("\nItem not deleted")
+    else:
+        print(f"No results found for {registration}")
 
 
 
@@ -219,9 +221,14 @@ def remove_vehicle():
 def find_vehicle_by_reg(registration):
     """
     Find the vehicle in database that matches the registration
-    """   
-    result = db.vehicles.find_one({"reg": registration})
-    return result
+    """ 
+    try:
+        result = db.vehicles.find_one({"reg": registration})
+        return result    
+    except OperationFailure:
+        print("oops ! Database error")  
+        return None
+    
     
 
 
