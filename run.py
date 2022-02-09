@@ -67,7 +67,7 @@ def vehicle_menu():
     else:
         print("Invalid choice !!!")
 
-def vehicle_update_menu:
+def vehicle_update_menu():
     """
     Display update vehicle details menu and call functions for updates
     """
@@ -94,13 +94,30 @@ def vehicle_update_menu:
         print("Invalid choice !!!")
 
 
+def display_vehicle_summary(vehicle):
+    """
+    Display summary details of vehicle object
+    """
+    reg = vehicle["reg"]
+    make = vehicle["make"]
+    model = vehicle["model"]
+    mileage = vehicle["mileage"]
+    print()
+    print(f"Make: {make}")
+    print(f"Model: {model}")
+    print(f"Reg: {reg}")
+    print(f"Mileage: {mileage}")
+    print()
+
+
 def vehicle_update_mileage(registration = None):
     """
     Update the mileage on vehicle. Default of None if registration is not passed
     as an arguement. 
     """
-    if registration is None:
-        
+    print("Function not implemented yet")
+
+
 def booking_menu():
     """
     Display booking menu option
@@ -192,15 +209,15 @@ def get_new_vehicle_details():
     return vehicle
 
 
-def save_vehicle_details(vehicle_dict):
+def save_vehicle_details(vehicle):
     """
     save the vehicle details to database
     """
     try:
-        db.vehicles.insert_one(vehicle_dict)
+        db.vehicles.insert_one(vehicle)
         return True
     except OperationFailure:
-        print("oops ! Database error when adding file")
+        print("oops ! Database error: Vehicle was not added")
         return False
         
     
@@ -217,13 +234,8 @@ def list_all_vehicles():
         print("No results found")
     else:
         for result in results_list:
-            reg = result["reg"]
-            make = result["make"]
-            model = result["model"]
-            print()
-            print(f"Make: {make}")
-            print(f"Model: {model}")
-            print(f"Reg: {reg}")
+            display_vehicle_summary(result)
+            
         
 
 
