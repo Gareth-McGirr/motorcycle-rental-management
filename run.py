@@ -67,7 +67,40 @@ def vehicle_menu():
     else:
         print("Invalid choice !!!")
 
+def vehicle_update_menu:
+    """
+    Display update vehicle details menu and call functions for updates
+    """
 
+    os.system('clear')
+    print("UPDATE VEHICLE MENU")
+    print("---------------")
+    print("1. Add new mileage")
+    print("2. Add service")
+    print("3. Back to vehicle menu")
+    print("0. Main Menu")
+    print("---------------")
+    choice = input("Enter Choice: ")
+
+    if choice == "1":
+        vehicle_update_mileage()
+    elif choice == "2":
+        print("Not Implemented")
+    elif choice == "3":
+        vehicle_menu()
+    elif choice == "0":
+        main_menu()
+    else:
+        print("Invalid choice !!!")
+
+
+def vehicle_update_mileage(registration = None):
+    """
+    Update the mileage on vehicle. Default of None if registration is not passed
+    as an arguement. 
+    """
+    if registration is None:
+        
 def booking_menu():
     """
     Display booking menu option
@@ -152,7 +185,9 @@ def get_new_vehicle_details():
         "model": model,
         "mileage": mileage,
         "service_intervals": service_interval,
-        "service_due_distance": miles_left_until_service
+        "service_due_distance": miles_left_until_service,
+        "bookings" : [],
+        "checked_out": False
     }
     return vehicle
 
