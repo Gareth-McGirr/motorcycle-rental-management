@@ -1,4 +1,5 @@
 import os
+from datetime import date
 from pymongo import MongoClient
 from pymongo.errors import OperationFailure
 if os.path.exists("env.py"):
@@ -85,7 +86,7 @@ def vehicle_update_menu():
     if choice == "1":
         vehicle_update_mileage()
     elif choice == "2":
-        print("Not Implemented")
+        vehicle_add_service()
     elif choice == "3":
         vehicle_menu()
     elif choice == "0":
@@ -132,7 +133,22 @@ def vehicle_update_mileage(registration=None):
     print(f"Service due in {new_service_due_distance} miles")
     update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
     
+
+def vehicle_add_service():
+    """
+    Update the service date on vehicle. 
+    reset the next service due distance. 
+    """
     
+    registration = (input("Enter reg: ")).upper()
+    result = find_vehicle_by_reg(registration)
+    display_vehicle_summary(result)
+    choice = input("Update as serviced (y/n)?  ")
+    if choice == "y":
+        today = date.today()
+        today_string = today.strftime("%d/%m/%Y")
+        new_service_due_distance = result["service_intervals"]
+        update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_serviced_date": today_string}})
 
 
 def booking_menu():
