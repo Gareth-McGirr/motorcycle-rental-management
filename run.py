@@ -1,5 +1,5 @@
 import os
-from datetime import date
+from datetime import date, datetime
 from pymongo import MongoClient
 from pymongo.errors import OperationFailure
 if os.path.exists("env.py"):
@@ -80,7 +80,7 @@ def vehicle_menu():
         else:
             print("Invalid choice !!!")
     
-    #return back to vehicle menu when other function is complete
+    # return back to vehicle menu when other function is complete
     vehicle_menu()
 
 def vehicle_update_menu():
@@ -131,7 +131,7 @@ def vehicle_update_mileage(registration=None):
     Update the mileage on vehicle. Default of None if registration is not passed
     as an arguement. 
     """
-    #if reg hasn't already been taken then get the reg to search for
+    # if reg hasn't already been taken then get the reg to search for
     if registration is None:
         registration = (input("Enter reg: ")).upper()
     result = find_vehicle_by_reg(registration)
@@ -188,8 +188,7 @@ def booking_menu():
             continue
 
         if choice == 1:
-            print("Not Implemented")
-            input("\nPress any key to continue...")
+            save_booking_details(get_booking_details())
             break
         elif choice == 2:
             print("Not Implemented")
@@ -204,6 +203,63 @@ def booking_menu():
         else:
             print("Invalid choice !!!")
     booking_menu()
+
+
+def get_booking_details():
+    """
+    Function to get details of customer booking
+    Function will ask for details and validate user input
+    If customer has made previous bookings then details will be displayed
+    and user does not need to enter. 
+    """
+
+    registration = (input("Enter vehicle registration: ")).upper()
+    email = (input("Enter email: ")).upper()
+    while True:
+        try:
+            tel_number = int(input("Enter contact number: "))
+            break
+        except ValueError:
+            print("Phone number cannot contain letters !!")
+    name = input("Enter Name: ")
+    start_date = input("Enter Start Date (dd/mm/yyyy): ")
+    end_date = input("Enter Return Date (dd/mm/yyyy): ")
+
+    # get booking number for this booking
+    # and generate next booking number to add to DB
+    result = db.booking_reference.find_one()
+    booking_number = result["next_booking_reference"]
+    next_booking_number = booking_number + 1
+    db.booking_reference.update_one({}, {"$set": {"next_booking_reference": next_booking_number}})
+    
+    # convert date strings to date objects
+    start_date_obj = datetime.strptime(start_date, '%d/%m/%Y')
+    end_date_obj = datetime.strptime(end_date, '%d/%m/%Y')
+
+    this_booking = {
+        "reg": registration,
+        "email": email,
+        "tel_no": tel_number,
+        "name": name,
+        "start_date": start_date_obj,
+        "end_date": end_date_obj,
+        "booking_reference": booking_number
+    }
+    return this_booking
+
+
+def save_booking_details(booking):
+    """
+    save the booking details to database
+    """
+    try:
+        db.bookings.insert_one(booking)
+        print("Booking Saved")
+        input("\nPress any key to continue...")
+    except OperationFailure:
+        print("oops ! Database error: Booking was not added")
+        input("\nPress any key to continue...")
+    return    
 
 
 def report_menu():
