@@ -180,18 +180,30 @@ def booking_menu():
     print("3. Find Booking")
     print("0. Main Menu")
     print("---------------")
-    choice = input("Enter Choice: ")
+    while True:
+        try:
+            choice = int(input("Enter Choice: "))
+        except ValueError:
+            print("You didn't enter a number !")
+            continue
 
-    if choice == "1":
-        print("Not Implemented")
-    elif choice == "2":
-        print("Not Implemented")
-    elif choice == "3":
-        print("Not Implemented")
-    elif choice == "0":
-        main_menu()
-    else:
-        print("Invalid choice !!!")
+        if choice == 1:
+            print("Not Implemented")
+            input("\nPress any key to continue...")
+            break
+        elif choice == 2:
+            print("Not Implemented")
+            input("\nPress any key to continue...")
+            break
+        elif choice == 3:
+            print("Not Implemented")
+            input("\nPress any key to continue...")
+            break
+        elif choice == 0:
+            main_menu()
+        else:
+            print("Invalid choice !!!")
+    booking_menu()
 
 
 def report_menu():
