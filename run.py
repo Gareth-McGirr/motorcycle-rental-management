@@ -57,7 +57,7 @@ def vehicle_menu():
         # TO DO: get user to verify details before saving to DB
         save_vehicle_details(new_vehicle)
     elif choice == "2":
-        print("Not Implemented")
+        vehicle_update_menu()
     elif choice == "3":
         remove_vehicle()
     elif choice == "4":
@@ -110,12 +110,29 @@ def display_vehicle_summary(vehicle):
     print()
 
 
-def vehicle_update_mileage(registration = None):
+def vehicle_update_mileage(registration=None):
     """
     Update the mileage on vehicle. Default of None if registration is not passed
     as an arguement. 
     """
-    print("Function not implemented yet")
+    #if reg hasn't already been taken then get the reg to search for
+    if registration is None:
+        registration = (input("Enter reg: ")).upper()
+    result = find_vehicle_by_reg(registration)
+    display_vehicle_summary(result)
+    while True:
+        try:
+            new_mileage = int(input("Enter new mileage: "))
+            break
+        except:
+            print("Only whole numbers can be entered !")
+    mileage_since_last_updated = new_mileage - result["mileage"]
+    print(f"Mileage since last update is: {mileage_since_last_updated}")
+    new_service_due_distance = result["service_due_distance"] - mileage_since_last_updated
+    print(f"Service due in {new_service_due_distance} miles")
+    update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
+    
+    
 
 
 def booking_menu():
@@ -203,7 +220,7 @@ def get_new_vehicle_details():
         "mileage": mileage,
         "service_intervals": service_interval,
         "service_due_distance": miles_left_until_service,
-        "bookings" : [],
+        "bookings": [],
         "checked_out": False
     }
     return vehicle
@@ -237,8 +254,6 @@ def list_all_vehicles():
             display_vehicle_summary(result)
             
         
-
-
 def remove_vehicle():
     """
     Get the user to enter registration, search database and remove item
@@ -246,13 +261,7 @@ def remove_vehicle():
     registration = (input("Enter reg: ")).upper()
     result = find_vehicle_by_reg(registration)
     if result is not None:
-        reg = result["reg"]
-        make = result["make"]
-        model = result["model"]
-        print()
-        print(f"Make: {make}")
-        print(f"Model: {model}")
-        print(f"Reg: {reg}")
+        display_vehicle_summary(result)
         verify_delete = input("\n\nDo you want to delete? (y/n) : ")
         if verify_delete == 'y':
             db.vehicles.delete_one({"reg": registration})
