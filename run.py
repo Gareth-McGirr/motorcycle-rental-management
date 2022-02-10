@@ -22,18 +22,24 @@ def main_menu():
     print("2. Bookings")
     print("3. Reports")
     print("---------------")
-    choice = input("Enter Choice: ")
+    while True:
+        try:
+            choice = int(input("Enter Choice: "))
+        except ValueError:
+            print("You didn't enter a number !")
+            continue
     
-    # To Do: validation on user input
-
-    if choice == "1":
-        vehicle_menu()
-    elif choice == "2":
-        booking_menu()
-    elif choice == "3":
-        report_menu()
-    else:
-        print("Invalid choice !!!")
+        if choice == 1:
+            vehicle_menu()
+            break
+        elif choice == 2:
+            booking_menu()
+            break
+        elif choice == 3:
+            report_menu()
+            break
+        else:
+            print("Invalid choice !!!")
 
 
 def vehicle_menu():
@@ -51,22 +57,31 @@ def vehicle_menu():
     print("4. List All")
     print("0. Main Menu")
     print("---------------")
-    choice = input("Enter Choice: ")
 
-    if choice == "1":
-        new_vehicle = get_new_vehicle_details()
-        # TO DO: get user to verify details before saving to DB
-        save_vehicle_details(new_vehicle)
-    elif choice == "2":
-        vehicle_update_menu()
-    elif choice == "3":
-        remove_vehicle()
-    elif choice == "4":
-        list_all_vehicles()
-    elif choice == "0":
-        main_menu()
-    else:
-        print("Invalid choice !!!")
+    while True:
+        choice = input("Enter Choice: ")
+        if choice == "1":
+            new_vehicle = get_new_vehicle_details()
+            # TO DO: get user to verify details before saving to DB
+            save_vehicle_details(new_vehicle)
+            break
+        elif choice == "2":
+            vehicle_update_menu()
+            break
+        elif choice == "3":
+            remove_vehicle()
+            break
+        elif choice == "4":
+            list_all_vehicles()
+            break
+        elif choice == "0":
+            main_menu()
+            break
+        else:
+            print("Invalid choice !!!")
+    
+    #return back to vehicle menu when other function is complete
+    vehicle_menu()
 
 def vehicle_update_menu():
     """
@@ -128,11 +143,11 @@ def vehicle_update_mileage(registration=None):
         except:
             print("Only whole numbers can be entered !")
     mileage_since_last_updated = new_mileage - result["mileage"]
-    print(f"Mileage since last update is: {mileage_since_last_updated}")
+    print(f"\nMileage since last update is: {mileage_since_last_updated}")
     new_service_due_distance = result["service_due_distance"] - mileage_since_last_updated
     print(f"Service due in {new_service_due_distance} miles")
     update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
-    
+    input("\nPress any key to continue...")
 
 def vehicle_add_service():
     """
@@ -251,6 +266,7 @@ def save_vehicle_details(vehicle):
         return True
     except OperationFailure:
         print("oops ! Database error: Vehicle was not added")
+        input("\nPress any key to continue...")
         return False
         
     
@@ -268,7 +284,7 @@ def list_all_vehicles():
     else:
         for result in results_list:
             display_vehicle_summary(result)
-            
+    input("\nPress any key to continue...")       
         
 def remove_vehicle():
     """
@@ -285,8 +301,8 @@ def remove_vehicle():
         else:
             print("\nItem not deleted")
     else:
-        print(f"No results found for {registration}")
-
+        print(f"\nNo results found for {registration}")
+    input("\nPress any key to continue...")
 
 
 # Need to look at this again - nees to return the object !!!!   
