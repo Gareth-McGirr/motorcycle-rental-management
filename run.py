@@ -195,7 +195,7 @@ def booking_menu():
             input("\nPress any key to continue...")
             break
         elif choice == 3:
-            print("Not Implemented")
+            find_booking_by_ref()
             input("\nPress any key to continue...")
             break
         elif choice == 0:
@@ -212,15 +212,17 @@ def get_booking_details():
     If customer has made previous bookings then details will be displayed
     and user does not need to enter. 
     """
-
+    # TO DO: Validate that reg exists and display bike make/model to confirm
     registration = (input("Enter vehicle registration: ")).upper()
     email = (input("Enter email: ")).upper()
+    #TO DO: Check if customer with email exists and display details
     while True:
         try:
             tel_number = int(input("Enter contact number: "))
             break
         except ValueError:
             print("Phone number cannot contain letters !!")
+    
     name = input("Enter Name: ")
     start_date = input("Enter Start Date (dd/mm/yyyy): ")
     end_date = input("Enter Return Date (dd/mm/yyyy): ")
@@ -248,18 +250,59 @@ def get_booking_details():
     return this_booking
 
 
+def find_booking_by_ref():
+    """
+    Function to find a booking with booking ref 
+    """
+    while True:
+        try:
+            booking_ref = int(input("Enter Booking Reference Number: "))
+            break
+        except:
+            print("Numbers only !!") 
+    result = db.bookings.find_one({"booking_reference": booking_ref})
+    if result is not None:
+        print(result)
+    else:
+        print("Not found")
+
+
 def save_booking_details(booking):
     """
     save the booking details to database
     """
     try:
         db.bookings.insert_one(booking)
+        add_booking_to_vehicle(booking["booking_reference"], booking["reg"])
         print("Booking Saved")
         input("\nPress any key to continue...")
     except OperationFailure:
         print("oops ! Database error: Booking was not added")
         input("\nPress any key to continue...")
     return    
+
+def find_vehicle_by_reg(registration):
+    """
+    Find the vehicle in database that matches the registration
+    """ 
+    try:
+        result = db.vehicles.find_one({"reg": registration})
+        return result    
+    except OperationFailure:
+        print("oops ! Database error")  
+        return None
+
+
+def add_booking_to_vehicle(booking_number, registration):
+    """
+    Adds the booking number to the vehicle
+    """
+    
+    vehicle = find_vehicle_by_reg(registration)
+    booking_list = vehicle["bookings"]
+    booking_list.append(booking_number)
+    update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"bookings": booking_list}})
+
 
 
 def report_menu():
@@ -373,7 +416,7 @@ def remove_vehicle():
     input("\nPress any key to continue...")
 
 
-# Need to look at this again - nees to return the object !!!!   
+  
 def find_vehicle_by_reg(registration):
     """
     Find the vehicle in database that matches the registration
