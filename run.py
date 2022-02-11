@@ -212,10 +212,22 @@ def get_booking_details():
     If customer has made previous bookings then details will be displayed
     and user does not need to enter. 
     """
-    # TO DO: Validate that reg exists and display bike make/model to confirm
-    registration = (input("Enter vehicle registration: ")).upper()
+    # Chaeck that vehicle exists and display for confirmation of correct vehicle
+    while True:
+        registration = (input("Enter vehicle registration: ")).upper()
+        this_vehicle = find_vehicle_by_reg(registration)
+        if this_vehicle is not None:
+            display_vehicle_summary(this_vehicle)
+            answer = input("Is this correct (y/n) ?")
+            if answer.upper() == 'Y':
+                break 
+        else:
+            print("Vehicle not found")
+
+    # TO DO: Check if customer with email exists and display details
+    
     email = (input("Enter email: ")).upper()
-    #TO DO: Check if customer with email exists and display details
+
     while True:
         try:
             tel_number = int(input("Enter contact number: "))
