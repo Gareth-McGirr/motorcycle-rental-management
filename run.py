@@ -10,6 +10,7 @@ cluster = os.environ.get("CLUSTER")
 client = MongoClient(cluster)
 db = client.rentalsDB
 
+
 def main_menu():
     """
     Displays the main menu ion the terminal
@@ -17,7 +18,7 @@ def main_menu():
 
     os.system('clear')
     print("MAIN MENU")
-    print("---------------")  
+    print("---------------")
     print("1. Vehicles")
     print("2. Bookings")
     print("3. Reports")
@@ -28,7 +29,7 @@ def main_menu():
         except ValueError:
             print("You didn't enter a number !")
             continue
-    
+
         if choice == 1:
             vehicle_menu()
             break
@@ -45,9 +46,8 @@ def main_menu():
 def vehicle_menu():
     """
     Display Vehicle menu option
-
     """
-   
+
     os.system('clear')
     print("VEHICLE MENU")
     print("---------------")
@@ -79,7 +79,7 @@ def vehicle_menu():
             break
         else:
             print("Invalid choice !!!")
-    
+
     # return back to vehicle menu when other function is complete
     vehicle_menu()
 
@@ -89,23 +89,23 @@ def get_new_vehicle_details():
     Get vehicle details from user and return as a dictionary object
     """
     registration = (input("Enter vehicle registration: ")).upper()
-    make = (input("Enter make: ")).upper()  
-    model = (input("Enter model: ")).upper()   
+    make = (input("Enter make: ")).upper()
+    model = (input("Enter model: ")).upper()
     while True:
         try:
             mileage = int(input("Enter current mileage: "))
             break
-        except:
+        except ValueError:
             print("Only whole numbers can be entered !")
     while True:
         try:
             service_interval = int(input("Enter service interval: "))
             break
-        except:
-            print("Only whole numbers can be entered !") 
+        except ValueError:
+            print("Only whole numbers can be entered !")
     next_service_due = mileage + service_interval
     miles_left_until_service = next_service_due - mileage
-    # create a dictionary to store vehicle details  
+    # create a dictionary to store vehicle details
     vehicle = {
         "reg": registration,
         "make": make,
@@ -164,8 +164,9 @@ def display_vehicle_summary(vehicle):
 
 def vehicle_update_mileage(registration=None):
     """
-    Update the mileage on vehicle. Default of None if registration is not passed
-    as an arguement. 
+    Update the mileage on vehicle. 
+    Default of None if registration is not passed
+    as an arguement.
     """
     # if reg hasn't already been taken then get the reg to search for
     if registration is None:
@@ -176,7 +177,7 @@ def vehicle_update_mileage(registration=None):
         try:
             new_mileage = int(input("Enter new mileage: "))
             break
-        except:
+        except ValueError:
             print("Only whole numbers can be entered !")
     mileage_since_last_updated = new_mileage - result["mileage"]
     print(f"\nMileage since last update is: {mileage_since_last_updated}")
@@ -191,7 +192,7 @@ def vehicle_add_service():
     Update the service date on vehicle. 
     reset the next service due distance. 
     """
-    
+
     registration = (input("Enter reg: ")).upper()
     result = find_vehicle_by_reg(registration)
     display_vehicle_summary(result)
@@ -206,12 +207,12 @@ def vehicle_add_service():
 def find_vehicle_by_reg(registration):
     """
     Find the vehicle in database that matches the registration
-    """ 
+    """
     try:
         result = db.vehicles.find_one({"reg": registration})
-        return result    
+        return result
     except OperationFailure:
-        print("oops ! Database error")  
+        print("oops ! Database error")
         return None
 
 
@@ -226,8 +227,8 @@ def save_vehicle_details(vehicle):
         print("oops ! Database error: Vehicle was not added")
         input("\nPress any key to continue...")
         return False
-        
-    
+
+
 def list_all_vehicles():
     """
     Gets a list of all the vehicles in inventory
@@ -242,7 +243,7 @@ def list_all_vehicles():
     else:
         for result in results_list:
             display_vehicle_summary(result)
-    input("\nPress any key to continue...")       
+    input("\nPress any key to continue...")
 
 
 def remove_vehicle():
@@ -269,7 +270,7 @@ def booking_menu():
     Display booking menu option
 
     """
-   
+
     os.system('clear')
     print("BOOKING MENU")
     print("---------------")
@@ -308,7 +309,7 @@ def create_booking():
     Function to get details of customer booking
     Function will ask for details and validate user input
     If customer has made previous bookings then details will be displayed
-    and user does not need to enter. 
+    and user does not need to enter.
     """
     
     # presume that customer is new
@@ -322,19 +323,19 @@ def create_booking():
             display_vehicle_summary(this_vehicle)
             answer = input("Is this correct (y/n) ?")
             if answer.upper() == 'Y':
-                break 
+                break
         else:
             print("Vehicle not found")
 
-    # TO DO: Check if customer with email exists and display details
-    
+    # Check if customer with email exists and display details
     email = (input("Enter email: ")).upper()
     result = find_customer(email)
     if result is not None:
         display_customer(result)
         answer = (input("Is this correct (y/n) ?")).upper()
         if answer == 'Y':
-            # TO DO: validate the dates entered, try to convert to date object in specified foramt ?
+            # TO DO: validate the dates entered,
+            # try to convert to date object in specified foramt ?
             new_customer = False
             name = result["name"]
             tel_number = result["email"]
@@ -347,18 +348,18 @@ def create_booking():
                 break
             except ValueError:
                 print("Phone number cannot contain letters !!")
-    
+
         name = input("Enter Name: ")
         start_date = input("Enter Start Date (dd/mm/yyyy): ")
         end_date = input("Enter Return Date (dd/mm/yyyy): ")
-    
+
     # get booking number for this booking
     # and generate next booking number to add to DB
     result = db.booking_reference.find_one()
     booking_number = result["next_booking_reference"]
     next_booking_number = booking_number + 1
     db.booking_reference.update_one({}, {"$set": {"next_booking_reference": next_booking_number}})
-    
+
     # convert date strings to date objects
     start_date_obj = datetime.strptime(start_date, '%d/%m/%Y')
     end_date_obj = datetime.strptime(end_date, '%d/%m/%Y')
@@ -371,7 +372,7 @@ def create_booking():
         "start_date": start_date_obj,
         "end_date": end_date_obj,
         "booking_reference": booking_number
-    } 
+    }
     save_booking_details(this_booking)
     if new_customer:
         this_customer = {
@@ -389,14 +390,14 @@ def create_booking():
 
 def find_booking_by_ref():
     """
-    Function to find a booking with booking ref 
+    Function to find a booking with booking ref
     """
     while True:
         try:
             booking_ref = int(input("Enter Booking Reference Number: "))
             break
-        except:
-            print("Numbers only !!") 
+        except ValueError:
+            print("Numbers only !!")
     result = db.bookings.find_one({"booking_reference": booking_ref})
     if result is not None:
         print(result)
@@ -416,14 +417,14 @@ def save_booking_details(booking):
     except OperationFailure:
         print("oops ! Database error: Booking was not added")
         input("\nPress any key to continue...")
-    return    
+    return
 
 
 def add_booking_to_vehicle(booking_number, registration):
     """
     Adds the booking number to the vehicle
     """
-    
+
     vehicle = find_vehicle_by_reg(registration)
     booking_list = vehicle["bookings"]
     booking_list.append(booking_number)
@@ -436,13 +437,16 @@ def find_customer(email_address):
     """
     try:
         result = db.customers.find_one({"email": email_address})
-        return result    
+        return result
     except OperationFailure:
-        print("oops ! Database error")  
+        print("oops ! Database error")
         return None
 
 
 def display_customer(customer_obj):
+    """
+    Displays Customer details
+    """
     name = customer_obj["name"]
     phone_no = customer_obj["tel_no"]
     email = customer_obj["email"]
@@ -456,7 +460,6 @@ def report_menu():
     Display report menu options
 
     """
-   
     os.system('clear')
     print("REPORT MENU")
     print("---------------")
@@ -477,7 +480,7 @@ def report_menu():
         main_menu()
     else:
         print("Invalid choice !!!")
-   
+
 
 def main():
     """
