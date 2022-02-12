@@ -83,6 +83,42 @@ def vehicle_menu():
     # return back to vehicle menu when other function is complete
     vehicle_menu()
 
+
+def get_new_vehicle_details():
+    """
+    Get vehicle details from user and return as a dictionary object
+    """
+    registration = (input("Enter vehicle registration: ")).upper()
+    make = (input("Enter make: ")).upper()  
+    model = (input("Enter model: ")).upper()   
+    while True:
+        try:
+            mileage = int(input("Enter current mileage: "))
+            break
+        except:
+            print("Only whole numbers can be entered !")
+    while True:
+        try:
+            service_interval = int(input("Enter service interval: "))
+            break
+        except:
+            print("Only whole numbers can be entered !") 
+    next_service_due = mileage + service_interval
+    miles_left_until_service = next_service_due - mileage
+    # create a dictionary to store vehicle details  
+    vehicle = {
+        "reg": registration,
+        "make": make,
+        "model": model,
+        "mileage": mileage,
+        "service_intervals": service_interval,
+        "service_due_distance": miles_left_until_service,
+        "bookings": [],
+        "checked_out": False
+    }
+    return vehicle
+
+
 def vehicle_update_menu():
     """
     Display update vehicle details menu and call functions for updates
@@ -149,6 +185,7 @@ def vehicle_update_mileage(registration=None):
     update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
     input("\nPress any key to continue...")
 
+
 def vehicle_add_service():
     """
     Update the service date on vehicle. 
@@ -164,6 +201,67 @@ def vehicle_add_service():
         today_string = today.strftime("%d/%m/%Y")
         new_service_due_distance = result["service_intervals"]
         update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_serviced_date": today_string}})
+
+
+def find_vehicle_by_reg(registration):
+    """
+    Find the vehicle in database that matches the registration
+    """ 
+    try:
+        result = db.vehicles.find_one({"reg": registration})
+        return result    
+    except OperationFailure:
+        print("oops ! Database error")  
+        return None
+
+
+def save_vehicle_details(vehicle):
+    """
+    save the vehicle details to database
+    """
+    try:
+        db.vehicles.insert_one(vehicle)
+        return True
+    except OperationFailure:
+        print("oops ! Database error: Vehicle was not added")
+        input("\nPress any key to continue...")
+        return False
+        
+    
+def list_all_vehicles():
+    """
+    Gets a list of all the vehicles in inventory
+    """
+    try:
+        result = db.vehicles.find({})
+    except OperationFailure:
+        print("oops ! Database error")
+    results_list = list(result)
+    if len(results_list) == 0:
+        print("No results found")
+    else:
+        for result in results_list:
+            display_vehicle_summary(result)
+    input("\nPress any key to continue...")       
+
+
+def remove_vehicle():
+    """
+    Get the user to enter registration, search database and remove item
+    """
+    registration = (input("Enter reg: ")).upper()
+    result = find_vehicle_by_reg(registration)
+    if result is not None:
+        display_vehicle_summary(result)
+        verify_delete = input("\n\nDo you want to delete? (y/n) : ")
+        if verify_delete == 'y':
+            db.vehicles.delete_one({"reg": registration})
+            print("\nVehicle has been deleted")
+        else:
+            print("\nItem not deleted")
+    else:
+        print(f"\nNo results found for {registration}")
+    input("\nPress any key to continue...")
 
 
 def booking_menu():
@@ -293,17 +391,6 @@ def save_booking_details(booking):
         input("\nPress any key to continue...")
     return    
 
-def find_vehicle_by_reg(registration):
-    """
-    Find the vehicle in database that matches the registration
-    """ 
-    try:
-        result = db.vehicles.find_one({"reg": registration})
-        return result    
-    except OperationFailure:
-        print("oops ! Database error")  
-        return None
-
 
 def add_booking_to_vehicle(booking_number, registration):
     """
@@ -314,7 +401,6 @@ def add_booking_to_vehicle(booking_number, registration):
     booking_list = vehicle["bookings"]
     booking_list.append(booking_number)
     update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"bookings": booking_list}})
-
 
 
 def report_menu():
@@ -343,105 +429,7 @@ def report_menu():
         main_menu()
     else:
         print("Invalid choice !!!")
-
-
-def get_new_vehicle_details():
-    """
-    Get vehicle details from user and return as a dictionary object
-    """
-    registration = (input("Enter vehicle registration: ")).upper()
-    make = (input("Enter make: ")).upper()  
-    model = (input("Enter model: ")).upper()   
-    while True:
-        try:
-            mileage = int(input("Enter current mileage: "))
-            break
-        except:
-            print("Only whole numbers can be entered !")
-    while True:
-        try:
-            service_interval = int(input("Enter service interval: "))
-            break
-        except:
-            print("Only whole numbers can be entered !") 
-    next_service_due = mileage + service_interval
-    miles_left_until_service = next_service_due - mileage
-    # create a dictionary to store vehicle details  
-    vehicle = {
-        "reg": registration,
-        "make": make,
-        "model": model,
-        "mileage": mileage,
-        "service_intervals": service_interval,
-        "service_due_distance": miles_left_until_service,
-        "bookings": [],
-        "checked_out": False
-    }
-    return vehicle
-
-
-def save_vehicle_details(vehicle):
-    """
-    save the vehicle details to database
-    """
-    try:
-        db.vehicles.insert_one(vehicle)
-        return True
-    except OperationFailure:
-        print("oops ! Database error: Vehicle was not added")
-        input("\nPress any key to continue...")
-        return False
-        
-    
-def list_all_vehicles():
-    """
-    Gets a list of all the vehicles in inventory
-    """
-    try:
-        result = db.vehicles.find({})
-    except OperationFailure:
-        print("oops ! Database error")
-    results_list = list(result)
-    if len(results_list) == 0:
-        print("No results found")
-    else:
-        for result in results_list:
-            display_vehicle_summary(result)
-    input("\nPress any key to continue...")       
-        
-def remove_vehicle():
-    """
-    Get the user to enter registration, search database and remove item
-    """
-    registration = (input("Enter reg: ")).upper()
-    result = find_vehicle_by_reg(registration)
-    if result is not None:
-        display_vehicle_summary(result)
-        verify_delete = input("\n\nDo you want to delete? (y/n) : ")
-        if verify_delete == 'y':
-            db.vehicles.delete_one({"reg": registration})
-            print("\nVehicle has been deleted")
-        else:
-            print("\nItem not deleted")
-    else:
-        print(f"\nNo results found for {registration}")
-    input("\nPress any key to continue...")
-
-
-  
-def find_vehicle_by_reg(registration):
-    """
-    Find the vehicle in database that matches the registration
-    """ 
-    try:
-        result = db.vehicles.find_one({"reg": registration})
-        return result    
-    except OperationFailure:
-        print("oops ! Database error")  
-        return None
-    
-    
-
+   
 
 def main():
     """
