@@ -365,14 +365,25 @@ def create_booking():
 
     this_booking = {
         "reg": registration,
-        "email": email,
-        "tel_no": tel_number,
         "name": name,
+        "tel_no": tel_number,
+        "email": email,
         "start_date": start_date_obj,
         "end_date": end_date_obj,
         "booking_reference": booking_number
     } 
-
+    save_booking_details(this_booking)
+    if new_customer:
+        this_customer = {
+            "name": name,
+            "tel_no": tel_number,
+            "email": email
+        }
+        db.customers.insert_one(this_customer)
+    else:
+        booking_list = result["bookings"]
+        booking_list.append(booking_number)
+        db.customers.update_one({"email": email}, {"$set": {"bookings": booking_list}})
     return
 
 
