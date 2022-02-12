@@ -329,16 +329,16 @@ def create_booking():
 
     # Check if customer with email exists and display details
     email = (input("Enter email: ")).upper()
-    result = find_customer(email)
-    if result is not None:
-        display_customer(result)
+    this_customer = find_customer(email)
+    if this_customer is not None:
+        display_customer(this_customer)
         answer = (input("Is this correct (y/n) ?")).upper()
         if answer == 'Y':
             # TO DO: validate the dates entered,
             # try to convert to date object in specified foramt ?
             new_customer = False
-            name = result["name"]
-            tel_number = result["email"]
+            name = this_customer["name"]
+            tel_number = this_customer["email"]
             start_date = input("Enter Start Date (dd/mm/yyyy): ")
             end_date = input("Enter Return Date (dd/mm/yyyy): ")
     else:
@@ -378,11 +378,12 @@ def create_booking():
         this_customer = {
             "name": name,
             "tel_no": tel_number,
-            "email": email
+            "email": email,
+            "bookings": [booking_number]
         }
         db.customers.insert_one(this_customer)
     else:
-        booking_list = result["bookings"]
+        booking_list = this_customer["bookings"]
         booking_list.append(booking_number)
         db.customers.update_one({"email": email}, {"$set": {"bookings": booking_list}})
     return
