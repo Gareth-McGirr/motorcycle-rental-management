@@ -286,7 +286,7 @@ def booking_menu():
             continue
 
         if choice == 1:
-            save_booking_details(get_booking_details())
+            create_booking()
             break
         elif choice == 2:
             print("Not Implemented")
@@ -303,13 +303,17 @@ def booking_menu():
     booking_menu()
 
 
-def get_booking_details():
+def create_booking():
     """
     Function to get details of customer booking
     Function will ask for details and validate user input
     If customer has made previous bookings then details will be displayed
     and user does not need to enter. 
     """
+    
+    # presume that customer is new
+    new_customer = True
+
     # Chaeck that vehicle exists and display for confirmation of correct vehicle
     while True:
         registration = (input("Enter vehicle registration: ")).upper()
@@ -325,18 +329,29 @@ def get_booking_details():
     # TO DO: Check if customer with email exists and display details
     
     email = (input("Enter email: ")).upper()
-
-    while True:
-        try:
-            tel_number = int(input("Enter contact number: "))
-            break
-        except ValueError:
-            print("Phone number cannot contain letters !!")
+    result = find_customer(email)
+    if result is not None:
+        display_customer(result)
+        answer = (input("Is this correct (y/n) ?")).upper()
+        if answer == 'Y':
+            # TO DO: validate the dates entered, try to convert to date object in specified foramt ?
+            new_customer = False
+            name = result["name"]
+            tel_number = result["email"]
+            start_date = input("Enter Start Date (dd/mm/yyyy): ")
+            end_date = input("Enter Return Date (dd/mm/yyyy): ")
+    else:
+        while True:
+            try:
+                tel_number = int(input("Enter contact number: "))
+                break
+            except ValueError:
+                print("Phone number cannot contain letters !!")
     
-    name = input("Enter Name: ")
-    start_date = input("Enter Start Date (dd/mm/yyyy): ")
-    end_date = input("Enter Return Date (dd/mm/yyyy): ")
-
+        name = input("Enter Name: ")
+        start_date = input("Enter Start Date (dd/mm/yyyy): ")
+        end_date = input("Enter Return Date (dd/mm/yyyy): ")
+    
     # get booking number for this booking
     # and generate next booking number to add to DB
     result = db.booking_reference.find_one()
@@ -356,8 +371,9 @@ def get_booking_details():
         "start_date": start_date_obj,
         "end_date": end_date_obj,
         "booking_reference": booking_number
-    }
-    return this_booking
+    } 
+
+    return
 
 
 def find_booking_by_ref():
@@ -401,6 +417,27 @@ def add_booking_to_vehicle(booking_number, registration):
     booking_list = vehicle["bookings"]
     booking_list.append(booking_number)
     update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"bookings": booking_list}})
+
+
+def find_customer(email_address):
+    """
+    Function to search for customer in DB by passing email address
+    """
+    try:
+        result = db.customers.find_one({"email": email_address})
+        return result    
+    except OperationFailure:
+        print("oops ! Database error")  
+        return None
+
+
+def display_customer(customer_obj):
+    name = customer_obj["name"]
+    phone_no = customer_obj["tel_no"]
+    email = customer_obj["email"]
+    print(f"Name: {name}")
+    print(f"Tel No: {phone_no}")
+    print(f"Email: {email}")
 
 
 def report_menu():
