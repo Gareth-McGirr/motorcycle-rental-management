@@ -56,7 +56,8 @@ def vehicle_menu():
     print("2. Update")
     print("3. Remove")
     print("4. List All")
-    print("5. Check availabilty")
+    print("5. Check availabilty - One")
+    print("6. Check availabilty - All")
     print("0. Main Menu")
     print("---------------")
 
@@ -77,7 +78,10 @@ def vehicle_menu():
             list_all_vehicles()
             break
         elif choice == "5":
-            check_availability()
+            check_availability_one_vehicle()
+            break
+        elif choice == "6":
+            list_all_vehicles_available()
             break
         elif choice == "0":
             main_menu()
@@ -160,11 +164,8 @@ def display_vehicle_summary(vehicle):
     model = vehicle["model"]
     mileage = vehicle["mileage"]
     print()
-    print(f"Make: {make}")
-    print(f"Model: {model}")
-    print(f"Reg: {reg}")
-    print(f"Mileage: {mileage}")
-    print()
+    print(f"Make: {make} Model: {model}")
+    print(f"Reg: {reg} Mileage: {mileage}")
 
 
 def vehicle_update_mileage(registration=None):
@@ -270,7 +271,7 @@ def remove_vehicle():
     input("\nPress any key to continue...")
 
 
-def check_availability():
+def check_availability_one_vehicle():
     """
     checks if vehicle is available in date range
     converts date range to a list and checks if 
@@ -279,39 +280,36 @@ def check_availability():
     """
     registration = (input("Enter reg: ")).upper()
     vehicle = find_vehicle_by_reg(registration)
-    print(vehicle)
+    display_vehicle_summary(vehicle)
     booking_number_list = vehicle["bookings"]
-    print(booking_number_list)
     
+    # Get the start and end date from user 
     start_date = input("Enter Start Date (dd/mm/yyyy): ")
     date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-
     end_date = input("Enter Start Date (dd/mm/yyyy): ")
     date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
     # inialize as available 
     available = True    
     for booking_number in booking_number_list:
-        # get the booking
+        # get the booking start and end date
         result = db.bookings.find_one({"booking_reference": booking_number})
         start = result["start_date"]
         end = result["end_date"]
         # calculte number of days for range       
         period = abs((end - start).days)
         daterange = []
+        # add each date in the range to a list
         for day in range(period):
             my_date = (start + timedelta(days=day))
             daterange.append(my_date)
-        print(daterange)
-        print()
-        
-        
+        # loop through each date in the list    
         for ele in daterange:
             # checking for date in range
             if ele >= date_strt and ele <= date_end:
                 # set as unavailable
                 available = False
-  
+    # print message to user if available or not
     if available:
         print("Vehicle is available for those dates")
         input("\nPress any key....")
@@ -320,7 +318,51 @@ def check_availability():
         input("\nPress any key....")
 
 
+def list_all_vehicles_available():
+    """
+    list all available vehicles within date range
+    """
+    # Get the start and end date from user
+    start_date = input("Enter Start Date (dd/mm/yyyy): ")
+    date_strt = datetime.strptime(start_date, '%d/%m/%Y')
+    end_date = input("Enter Start Date (dd/mm/yyyy): ")
+    date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
+    # Get list of all vehicles in system
+    try:
+        vehicles = db.vehicles.find({})
+    except OperationFailure:
+        print("oops ! Database error")
+    vehicle_list = list(vehicles)
+    if len(vehicle_list) == 0:
+        print("No results found")
+    else:
+        for vehicle in vehicle_list:
+            booking_number_list = vehicle["bookings"]
+            # inialize as available 
+            available = True    
+            for booking_number in booking_number_list:
+                # get the booking
+                result = db.bookings.find_one({"booking_reference": booking_number})
+                start = result["start_date"]
+                end = result["end_date"]
+                # calculte number of days for range       
+                period = abs((end - start).days)
+                daterange = []
+                for day in range(period):
+                    my_date = (start + timedelta(days=day))
+                    daterange.append(my_date)
+
+                for ele in daterange:
+                    # checking for date in range
+                    if ele >= date_strt and ele <= date_end:
+                        # set as unavailable
+                        available = False
+            
+            if available:
+                display_vehicle_summary(vehicle)
+            
+    input("\nPress any key....")    
 
 def booking_menu():
     """
