@@ -1,5 +1,5 @@
 import os
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 from operator import itemgetter
 from pymongo import MongoClient
 from pymongo.errors import OperationFailure
@@ -123,7 +123,8 @@ def get_new_vehicle_details():
         "service_intervals": service_interval,
         "service_due_distance": miles_left_until_service,
         "bookings": [],
-        "checked_out": False
+        "service_history": [],
+        "last_service_date": datetime.now(),
     }
     return vehicle
 
@@ -204,10 +205,20 @@ def vehicle_add_service():
     display_vehicle_summary(result)
     choice = input("Update as serviced (y/n)?  ")
     if choice == "y":
-        today = date.today()
-        today_string = today.strftime("%d/%m/%Y")
+        today = datetime.now()
         new_service_due_distance = result["service_intervals"]
-        update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_serviced_date": today_string}})
+        service_description = input("Enter service details: ")
+        service_history_list = result["service_history"]
+        current_mileage = result["mileage"]
+        service_details = {
+            "date": today,
+            "mileage": current_mileage,
+            "description": service_description
+        }
+        service_history_list.append(service_details)
+        
+
+        update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_service_date": today, "service_history": service_history_list}})
 
 
 def find_vehicle_by_reg(registration):
