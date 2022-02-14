@@ -146,6 +146,7 @@ def vehicle_update_menu():
 
     if choice == "1":
         vehicle_update_mileage()
+        vehicle_update_menu()
     elif choice == "2":
         vehicle_add_service()
     elif choice == "3":
@@ -177,22 +178,30 @@ def vehicle_update_mileage(registration=None):
     """
     # if reg hasn't already been taken then get the reg to search for
     if registration is None:
-        registration = (input("Enter reg: \n")).upper()
+        registration = (input("Enter reg: \n")).upper()    
     result = find_vehicle_by_reg(registration)
-    display_vehicle_summary(result)
-    while True:
-        try:
-            new_mileage = int(input("Enter new mileage: \n"))
-            break
-        except ValueError:
-            print("Only whole numbers can be entered !")
-    mileage_since_last_updated = new_mileage - result["mileage"]
-    print(f"\nMileage since last update is: {mileage_since_last_updated}")
-    new_service_due_distance = result["service_due_distance"] - mileage_since_last_updated
-    print(f"Service due in {new_service_due_distance} miles")
-    update_result = db.vehicles.update_one(
-        {"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
-    input("\nPress any key to continue...\n")
+    if result is not None:
+        display_vehicle_summary(result)
+        while True:
+            try:
+                new_mileage = int(input("Enter new mileage: \n"))
+                if(new_mileage < result["mileage"]):
+                    print("New mileage should not be less than old mileage !!!")
+                    continue
+                break
+            except ValueError:
+                print("Only whole numbers can be entered !")
+            
+        mileage_since_last_updated = new_mileage - result["mileage"]
+        print(f"\nMileage since last update is: {mileage_since_last_updated}")
+        new_service_due_distance = result["service_due_distance"] - mileage_since_last_updated
+        print(f"Service due in {new_service_due_distance} miles")
+        update_result = db.vehicles.update_one(
+            {"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
+        input("\nPress any key to continue...\n")
+    else:
+        print("Vehicle not found !")
+        input("\nPress any key to continue...\n")
 
 
 def vehicle_add_service():
