@@ -26,7 +26,7 @@ def main_menu():
     print("---------------")
     while True:
         try:
-            choice = int(input("Enter Choice: "))
+            choice = int(input("Enter Choice: \n"))
         except ValueError:
             print("You didn't enter a number !")
             continue
@@ -62,7 +62,7 @@ def vehicle_menu():
     print("---------------")
 
     while True:
-        choice = input("Enter Choice: ")
+        choice = input("Enter Choice: \n")
         if choice == "1":
             new_vehicle = get_new_vehicle_details()
             # TO DO: get user to verify details before saving to DB
@@ -97,18 +97,18 @@ def get_new_vehicle_details():
     """
     Get vehicle details from user and return as a dictionary object
     """
-    registration = (input("Enter vehicle registration: ")).upper()
-    make = (input("Enter make: ")).upper()
-    model = (input("Enter model: ")).upper()
+    registration = (input("Enter vehicle registration: \n")).upper()
+    make = (input("Enter make: \n")).upper()
+    model = (input("Enter model: \n")).upper()
     while True:
         try:
-            mileage = int(input("Enter current mileage: "))
+            mileage = int(input("Enter current mileage: \n"))
             break
         except ValueError:
             print("Only whole numbers can be entered !")
     while True:
         try:
-            service_interval = int(input("Enter service interval: "))
+            service_interval = int(input("Enter service interval: \n"))
             break
         except ValueError:
             print("Only whole numbers can be entered !")
@@ -142,7 +142,7 @@ def vehicle_update_menu():
     print("3. Back to vehicle menu")   
     print("0. Main Menu")
     print("---------------")
-    choice = input("Enter Choice: ")
+    choice = input("Enter Choice: \n")
 
     if choice == "1":
         vehicle_update_mileage()
@@ -177,12 +177,12 @@ def vehicle_update_mileage(registration=None):
     """
     # if reg hasn't already been taken then get the reg to search for
     if registration is None:
-        registration = (input("Enter reg: ")).upper()
+        registration = (input("Enter reg: \n")).upper()
     result = find_vehicle_by_reg(registration)
     display_vehicle_summary(result)
     while True:
         try:
-            new_mileage = int(input("Enter new mileage: "))
+            new_mileage = int(input("Enter new mileage: \n"))
             break
         except ValueError:
             print("Only whole numbers can be entered !")
@@ -191,7 +191,7 @@ def vehicle_update_mileage(registration=None):
     new_service_due_distance = result["service_due_distance"] - mileage_since_last_updated
     print(f"Service due in {new_service_due_distance} miles")
     update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
-    input("\nPress any key to continue...")
+    input("\nPress any key to continue...\n")
 
 
 def vehicle_add_service():
@@ -200,14 +200,14 @@ def vehicle_add_service():
     reset the next service due distance. 
     """
 
-    registration = (input("Enter reg: ")).upper()
+    registration = (input("Enter reg: \n")).upper()
     result = find_vehicle_by_reg(registration)
     display_vehicle_summary(result)
-    choice = input("Update as serviced (y/n)?  ")
+    choice = input("Update as serviced (y/n)?  \n")
     if choice == "y":
         today = datetime.now()
         new_service_due_distance = result["service_intervals"]
-        service_description = input("Enter service details: ")
+        service_description = input("Enter service details: \n")
         service_history_list = result["service_history"]
         current_mileage = result["mileage"]
         service_details = {
@@ -242,7 +242,7 @@ def save_vehicle_details(vehicle):
         return True
     except OperationFailure:
         print("oops ! Database error: Vehicle was not added")
-        input("\nPress any key to continue...")
+        input("\nPress any key to continue...\n")
         return False
 
 
@@ -260,18 +260,18 @@ def list_all_vehicles():
     else:
         for result in results_list:
             display_vehicle_summary(result)
-    input("\nPress any key to continue...")
+    input("\nPress any key to continue...\n")
 
 
 def remove_vehicle():
     """
     Get the user to enter registration, search database and remove item
     """
-    registration = (input("Enter reg: ")).upper()
+    registration = (input("Enter reg: \n")).upper()
     result = find_vehicle_by_reg(registration)
     if result is not None:
         display_vehicle_summary(result)
-        verify_delete = input("\n\nDo you want to delete? (y/n) : ")
+        verify_delete = input("\n\nDo you want to delete? (y/n) : \n")
         if verify_delete == 'y':
             db.vehicles.delete_one({"reg": registration})
             print("\nVehicle has been deleted")
@@ -279,7 +279,7 @@ def remove_vehicle():
             print("\nItem not deleted")
     else:
         print(f"\nNo results found for {registration}")
-    input("\nPress any key to continue...")
+    input("\nPress any key to continue...\n")
 
 
 def check_availability_one_vehicle():
@@ -289,15 +289,15 @@ def check_availability_one_vehicle():
     any date in the list is in date ranges of bookings
     for the vehicle 
     """
-    registration = (input("Enter reg: ")).upper()
+    registration = (input("Enter reg: \n")).upper()
     vehicle = find_vehicle_by_reg(registration)
     display_vehicle_summary(vehicle)
     booking_number_list = vehicle["bookings"]
     
     # Get the start and end date from user 
-    start_date = input("Enter Start Date (dd/mm/yyyy): ")
+    start_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-    end_date = input("Enter Start Date (dd/mm/yyyy): ")
+    end_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
     # inialize as available 
@@ -323,10 +323,10 @@ def check_availability_one_vehicle():
     # print message to user if available or not
     if available:
         print("Vehicle is available for those dates")
-        input("\nPress any key....")
+        input("\nPress any key....\n")
     else:
         print("Not available for those dates")
-        input("\nPress any key....")
+        input("\nPress any key....\n")
 
 
 def list_all_vehicles_available():
@@ -334,9 +334,9 @@ def list_all_vehicles_available():
     list all available vehicles within date range
     """
     # Get the start and end date from user
-    start_date = input("Enter Start Date (dd/mm/yyyy): ")
+    start_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-    end_date = input("Enter Start Date (dd/mm/yyyy): ")
+    end_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
     # Get list of all vehicles in system
@@ -373,7 +373,7 @@ def list_all_vehicles_available():
             if available:
                 display_vehicle_summary(vehicle)
             
-    input("\nPress any key....")    
+    input("\nPress any key....\n")    
 
 def booking_menu():
     """
@@ -391,7 +391,7 @@ def booking_menu():
     print("---------------")
     while True:
         try:
-            choice = int(input("Enter Choice: "))
+            choice = int(input("Enter Choice: \n"))
         except ValueError:
             print("You didn't enter a number !")
             continue
@@ -401,11 +401,11 @@ def booking_menu():
             break
         elif choice == 2:
             find_bookings_in_range()
-            input("\nPress any key to continue...")
+            input("\nPress any key to continue...\n")
             break
         elif choice == 3:
             find_booking_by_ref()
-            input("\nPress any key to continue...")
+            input("\nPress any key to continue...\n")
             break
         elif choice == 0:
             main_menu()
@@ -427,41 +427,41 @@ def create_booking():
 
     # Chaeck that vehicle exists and display for confirmation of correct vehicle
     while True:
-        registration = (input("Enter vehicle registration: ")).upper()
+        registration = (input("Enter vehicle registration: \n")).upper()
         this_vehicle = find_vehicle_by_reg(registration)
         if this_vehicle is not None:
             display_vehicle_summary(this_vehicle)
-            answer = input("Is this correct (y/n) ?")
+            answer = input("Is this correct (y/n) ? \n")
             if answer.upper() == 'Y':
                 break
         else:
             print("Vehicle not found")
 
     # Check if customer with email exists and display details
-    email = (input("Enter email: ")).upper()
+    email = (input("Enter email: \n")).upper()
     this_customer = find_customer(email)
     if this_customer is not None:
         display_customer(this_customer)
-        answer = (input("Is this correct (y/n) ?")).upper()
+        answer = (input("Is this correct (y/n) ? \n")).upper()
         if answer == 'Y':
             # TO DO: validate the dates entered,
             # try to convert to date object in specified foramt ?
             new_customer = False
             name = this_customer["name"]
             tel_number = this_customer["email"]
-            start_date = input("Enter Start Date (dd/mm/yyyy): ")
-            end_date = input("Enter Return Date (dd/mm/yyyy): ")
+            start_date = input("Enter Start Date (dd/mm/yyyy): \n")
+            end_date = input("Enter Return Date (dd/mm/yyyy): \n")
     else:
         while True:
             try:
-                tel_number = int(input("Enter contact number: "))
+                tel_number = int(input("Enter contact number: \n"))
                 break
             except ValueError:
                 print("Phone number cannot contain letters !!")
 
-        name = input("Enter Name: ")
-        start_date = input("Enter Start Date (dd/mm/yyyy): ")
-        end_date = input("Enter Return Date (dd/mm/yyyy): ")
+        name = input("Enter Name: \n")
+        start_date = input("Enter Start Date (dd/mm/yyyy): \n")
+        end_date = input("Enter Return Date (dd/mm/yyyy): \n")
 
     # get booking number for this booking
     # and generate next booking number to add to DB
@@ -505,7 +505,7 @@ def find_booking_by_ref():
     """
     while True:
         try:
-            booking_ref = int(input("Enter Booking Reference Number: "))
+            booking_ref = int(input("Enter Booking Reference Number: \n"))
             break
         except ValueError:
             print("Numbers only !!")
@@ -523,7 +523,7 @@ def find_bookings_in_range():
     print("LIST BOOKINGS FOR NEXT NUMBER OF DAYS\n")
     while True:
         try:
-            days = int(input("Enter number of days: "))
+            days = int(input("Enter number of days: \n"))
             break
         except ValueError:
             print("You didn't enter a number !")
@@ -534,7 +534,7 @@ def find_bookings_in_range():
     print(f"Future date is: {end_date.strftime('%d/%m/%Y')}")
     bookings = list(db.bookings.find({}))
     
-    print("Bookings in order of date.\n")
+    print("Bookings in order of date:\n")
     bookings.sort(key=itemgetter('start_date'), reverse=False)
     for booking in bookings:
         if booking["start_date"] < end_date and booking["start_date"] > now - timedelta(days=1):
@@ -549,10 +549,10 @@ def save_booking_details(booking):
         db.bookings.insert_one(booking)
         add_booking_to_vehicle(booking["booking_reference"], booking["reg"])
         print("Booking Saved")
-        input("\nPress any key to continue...")
+        input("\nPress any key to continue...\n")
     except OperationFailure:
         print("oops ! Database error: Booking was not added")
-        input("\nPress any key to continue...")
+        input("\nPress any key to continue...\n")
     return
 
 
@@ -619,7 +619,7 @@ def report_menu():
     print("3. Sales Report")
     print("0. Main Menu")
     print("---------------")
-    choice = input("Enter Choice: ")
+    choice = input("Enter Choice: \n")
 
     if choice == "1":
         print("Not Implemented")
