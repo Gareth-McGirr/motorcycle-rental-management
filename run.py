@@ -149,13 +149,15 @@ def vehicle_update_menu():
         vehicle_update_menu()
     elif choice == "2":
         vehicle_add_service()
+        vehicle_update_menu()
     elif choice == "3":
         vehicle_menu()
     elif choice == "0":
         main_menu()
     else:
         print("Invalid choice !!!")
-
+        input("\nPress any key to continue...\n")
+        vehicle_update_menu()
 
 def display_vehicle_summary(vehicle):
     """
@@ -184,7 +186,7 @@ def vehicle_update_mileage(registration=None):
         display_vehicle_summary(result)
         while True:
             try:
-                new_mileage = int(input("Enter new mileage: \n"))
+                new_mileage = int(input("\nEnter new mileage: \n"))
                 if(new_mileage < result["mileage"]):
                     print("New mileage should not be less than old mileage !!!")
                     continue
@@ -200,7 +202,7 @@ def vehicle_update_mileage(registration=None):
             {"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
         input("\nPress any key to continue...\n")
     else:
-        print("Vehicle not found !")
+        print("\nVehicle not found !")
         input("\nPress any key to continue...\n")
 
 
@@ -212,23 +214,26 @@ def vehicle_add_service():
 
     registration = (input("Enter reg: \n")).upper()
     result = find_vehicle_by_reg(registration)
-    display_vehicle_summary(result)
-    choice = input("Update as serviced (y/n)?  \n")
-    if choice == "y":
-        today = datetime.now()
-        new_service_due_distance = result["service_intervals"]
-        service_description = input("Enter service details: \n")
-        service_history_list = result["service_history"]
-        current_mileage = result["mileage"]
-        service_details = {
-            "date": today,
-            "mileage": current_mileage,
-            "description": service_description
-        }
-        service_history_list.append(service_details)
+    if result is not None:
+        display_vehicle_summary(result)
+        choice = input("Update as serviced (y/n)?  \n")
+        if choice == "y":
+            today = datetime.now()
+            new_service_due_distance = result["service_intervals"]
+            service_description = input("Enter service details: \n")
+            service_history_list = result["service_history"]
+            current_mileage = result["mileage"]
+            service_details = {
+                "date": today,
+                "mileage": current_mileage,
+                "description": service_description
+            }
+            service_history_list.append(service_details)
 
-        update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_service_date": today, "service_history": service_history_list}})
-
+            update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_service_date": today, "service_history": service_history_list}})
+    else:
+        print("Vehicle not found !")
+        input("\nPress any key to continue...\n")
 
 def find_vehicle_by_reg(registration):
     """
