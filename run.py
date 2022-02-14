@@ -1,6 +1,6 @@
 import os
 from datetime import date, datetime, timedelta
-
+from operator import itemgetter
 from pymongo import MongoClient
 from pymongo.errors import OperationFailure
 if os.path.exists("env.py"):
@@ -389,7 +389,7 @@ def booking_menu():
             create_booking()
             break
         elif choice == 2:
-            print("Not Implemented")
+            find_bookings_in_range()
             input("\nPress any key to continue...")
             break
         elif choice == 3:
@@ -500,10 +500,35 @@ def find_booking_by_ref():
             print("Numbers only !!")
     result = db.bookings.find_one({"booking_reference": booking_ref})
     if result is not None:
-        print(result)
+        display_booking(result)
     else:
         print("Not found")
 
+def find_bookings_in_range():
+    """
+    Get a list of bookings in the next number of days
+    """  
+    os.system('clear')
+    print("LIST BOOKINGS FOR NEXT NUMBER OF DAYS\n")
+    while True:
+        try:
+            days = int(input("Enter number of days: "))
+            break
+        except ValueError:
+            print("You didn't enter a number !")
+            continue  
+    now = datetime.now()
+    print(f"Todays date is: {now.strftime('%d/%m/%Y')}")
+    end_date = now + timedelta(days=days)
+    print(f"Future date is: {end_date.strftime('%d/%m/%Y')}")
+    bookings = list(db.bookings.find({}))
+    
+    print("Bookings in order of date.\n")
+    bookings.sort(key=itemgetter('start_date'), reverse=False)
+    for booking in bookings:
+        if booking["start_date"] < end_date and booking["start_date"] > now - timedelta(days=1):
+            display_booking(booking)
+            print()
 
 def save_booking_details(booking):
     """
@@ -529,6 +554,21 @@ def add_booking_to_vehicle(booking_number, registration):
     booking_list = vehicle["bookings"]
     booking_list.append(booking_number)
     update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"bookings": booking_list}})
+
+
+def display_booking(booking_obj):
+    """
+    Dispalys a booking 
+    """
+    
+    booking_number = booking_obj["booking_reference"]
+    name = booking_obj["name"]
+    start = booking_obj["start_date"].strftime('%d/%m/%Y')
+    end = booking_obj["end_date"].strftime('%d/%m/%Y')
+
+    print(f"Ref: {booking_number} Name: {name}")
+    print(f"Start: {start} End: {end}")
+    
 
 
 def find_customer(email_address):
