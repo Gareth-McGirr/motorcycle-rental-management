@@ -139,7 +139,7 @@ def vehicle_update_menu():
     print("---------------")
     print("1. Add new mileage")
     print("2. Add service")
-    print("3. Back to vehicle menu")   
+    print("3. Back to vehicle menu")
     print("0. Main Menu")
     print("---------------")
     choice = input("Enter Choice: \n")
@@ -171,7 +171,7 @@ def display_vehicle_summary(vehicle):
 
 def vehicle_update_mileage(registration=None):
     """
-    Update the mileage on vehicle. 
+    Update the mileage on vehicle.
     Default of None if registration is not passed
     as an arguement.
     """
@@ -190,14 +190,15 @@ def vehicle_update_mileage(registration=None):
     print(f"\nMileage since last update is: {mileage_since_last_updated}")
     new_service_due_distance = result["service_due_distance"] - mileage_since_last_updated
     print(f"Service due in {new_service_due_distance} miles")
-    update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
+    update_result = db.vehicles.update_one(
+        {"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
     input("\nPress any key to continue...\n")
 
 
 def vehicle_add_service():
     """
-    Update the service date on vehicle. 
-    reset the next service due distance. 
+    Update the service date on vehicle.
+    reset the next service due distance.
     """
 
     registration = (input("Enter reg: \n")).upper()
@@ -216,7 +217,6 @@ def vehicle_add_service():
             "description": service_description
         }
         service_history_list.append(service_details)
-        
 
         update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_service_date": today, "service_history": service_history_list}})
 
@@ -285,36 +285,36 @@ def remove_vehicle():
 def check_availability_one_vehicle():
     """
     checks if vehicle is available in date range
-    converts date range to a list and checks if 
+    converts date range to a list and checks if
     any date in the list is in date ranges of bookings
-    for the vehicle 
+    for the vehicle
     """
     registration = (input("Enter reg: \n")).upper()
     vehicle = find_vehicle_by_reg(registration)
     display_vehicle_summary(vehicle)
     booking_number_list = vehicle["bookings"]
-    
-    # Get the start and end date from user 
+
+    # Get the start and end date from user
     start_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_strt = datetime.strptime(start_date, '%d/%m/%Y')
     end_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
-    # inialize as available 
+    # inialize as available
     available = True    
     for booking_number in booking_number_list:
         # get the booking start and end date
         result = db.bookings.find_one({"booking_reference": booking_number})
         start = result["start_date"]
         end = result["end_date"]
-        # calculte number of days for range       
+        # calculte number of days for range   
         period = abs((end - start).days)
         daterange = []
         # add each date in the range to a list
         for day in range(period):
             my_date = (start + timedelta(days=day))
             daterange.append(my_date)
-        # loop through each date in the list    
+        # loop through each date in the list 
         for ele in daterange:
             # checking for date in range
             if ele >= date_strt and ele <= date_end:
@@ -350,14 +350,14 @@ def list_all_vehicles_available():
     else:
         for vehicle in vehicle_list:
             booking_number_list = vehicle["bookings"]
-            # inialize as available 
-            available = True    
+            # inialize as available
+            available = True
             for booking_number in booking_number_list:
                 # get the booking
                 result = db.bookings.find_one({"booking_reference": booking_number})
                 start = result["start_date"]
                 end = result["end_date"]
-                # calculte number of days for range       
+                # calculte number of days for range
                 period = abs((end - start).days)
                 daterange = []
                 for day in range(period):
@@ -369,11 +369,12 @@ def list_all_vehicles_available():
                     if ele >= date_strt and ele <= date_end:
                         # set as unavailable
                         available = False
-            
+
             if available:
                 display_vehicle_summary(vehicle)
-            
-    input("\nPress any key....\n")    
+
+    input("\nPress any key....\n")
+
 
 def booking_menu():
     """
@@ -421,11 +422,12 @@ def create_booking():
     If customer has made previous bookings then details will be displayed
     and user does not need to enter.
     """
-    
+
     # presume that customer is new
     new_customer = True
 
-    # Chaeck that vehicle exists and display for confirmation of correct vehicle
+    # Chaeck that vehicle exists and display for
+    # confirmation of correct vehicle
     while True:
         registration = (input("Enter vehicle registration: \n")).upper()
         this_vehicle = find_vehicle_by_reg(registration)
@@ -515,10 +517,11 @@ def find_booking_by_ref():
     else:
         print("Not found")
 
+
 def find_bookings_in_range():
     """
     Get a list of bookings in the next number of days
-    """  
+    """
     os.system('clear')
     print("LIST BOOKINGS FOR NEXT NUMBER OF DAYS\n")
     while True:
@@ -540,6 +543,7 @@ def find_bookings_in_range():
         if booking["start_date"] < end_date and booking["start_date"] > now - timedelta(days=1):
             display_booking(booking)
             print()
+
 
 def save_booking_details(booking):
     """
@@ -564,7 +568,9 @@ def add_booking_to_vehicle(booking_number, registration):
     vehicle = find_vehicle_by_reg(registration)
     booking_list = vehicle["bookings"]
     booking_list.append(booking_number)
-    update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"bookings": booking_list}})
+    update_result = db.vehicles.update_one(
+        {"reg": registration}, {"$set": {"bookings": booking_list}}
+        )
 
 
 def display_booking(booking_obj):
@@ -579,7 +585,6 @@ def display_booking(booking_obj):
 
     print(f"Ref: {booking_number} Name: {name}")
     print(f"Start: {start} End: {end}")
-    
 
 
 def find_customer(email_address):
