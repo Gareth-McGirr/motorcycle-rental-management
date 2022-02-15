@@ -311,7 +311,7 @@ def check_availability_one_vehicle():
     # Get the start and end date from user
     start_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-    end_date = input("Enter Start Date (dd/mm/yyyy): \n")
+    end_date = input("Enter End Date (dd/mm/yyyy): \n")
     date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
     # inialize as available
@@ -350,7 +350,7 @@ def list_all_vehicles_available():
     # Get the start and end date from user
     start_date = input("Enter Start Date (dd/mm/yyyy): \n")
     date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-    end_date = input("Enter Start Date (dd/mm/yyyy): \n")
+    end_date = input("Enter End Date (dd/mm/yyyy): \n")
     date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
     # Get list of all vehicles in system
