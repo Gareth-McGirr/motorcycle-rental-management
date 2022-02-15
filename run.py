@@ -321,8 +321,7 @@ def check_availability_one_vehicle():
             date_strt = datetime.strptime(start_date, '%d/%m/%Y')
             break
         except ValueError:
-            print("Invalid date entered !")
-   
+            print("Invalid date entered !") 
     while True:
         try:
             end_date = input("Enter End Date (dd/mm/yyyy): \n")
@@ -363,12 +362,22 @@ def list_all_vehicles_available():
     """
     list all available vehicles within date range
     """
-    # Get the start and end date from user
-    start_date = input("Enter Start Date (dd/mm/yyyy): \n")
-    date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-    end_date = input("Enter End Date (dd/mm/yyyy): \n")
-    date_end = datetime.strptime(end_date, '%d/%m/%Y')
-
+   
+    # Get a valid start and end date from user
+    while True:
+        try:
+            start_date = input("Enter Start Date (dd/mm/yyyy): \n")
+            date_strt = datetime.strptime(start_date, '%d/%m/%Y')
+            break
+        except ValueError:
+            print("Invalid date entered !") 
+    while True:
+        try:
+            end_date = input("Enter End Date (dd/mm/yyyy): \n")
+            date_end = datetime.strptime(end_date, '%d/%m/%Y')
+            break
+        except ValueError:
+            print("Invalid date entered !")
     # Get list of all vehicles in system
     try:
         vehicles = db.vehicles.find({})
