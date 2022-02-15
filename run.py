@@ -51,7 +51,8 @@ def vehicle_menu():
     print("1. Add new")
     print("2. Update")
     print("3. Remove")
-    print("4. List All")
+    print("4. Service History")
+    print("5. List All")
     print("0. Main Menu")
     print("---------------")
 
@@ -69,6 +70,9 @@ def vehicle_menu():
             remove_vehicle()
             break
         elif choice == "4":
+            get_service_history()
+            break
+        elif choice == "5":
             list_all_vehicles()
             break
         elif choice == "0":
@@ -80,6 +84,29 @@ def vehicle_menu():
     # return back to vehicle menu when other function is complete
     vehicle_menu()
 
+def get_service_history():
+    """
+    Find vehicle and display service history
+    """
+    registration = (input("Enter reg: \n")).upper()
+    result = find_vehicle_by_reg(registration)
+    if result is not None:
+        display_vehicle_summary(result)
+        service_history_list = result["service_history"]
+        next_service = result["service_due_distance"]
+        for service in service_history_list:
+            service_date = service["date"].strftime('%d/%m/%Y')
+            description = service["description"]
+            mileage = service["mileage"]
+            print()
+            print(f"Date: {service_date}")
+            print(f"Description: {description}")
+            print(f"Mileage: {mileage}")
+        print(f"\n\nNext service due in: {next_service}")
+        input("\nPress any key to continue...\n")          
+    else:
+        print("Vehicle not found !")
+        input("\nPress any key to continue...\n")
 
 def get_new_vehicle_details():
     """
@@ -588,7 +615,8 @@ def create_booking(registration=None, start=None, end=None):
 
 def find_booking_by_ref():
     """
-    Function to find a booking with booking ref
+    Function to find a booking with booking ref.
+    Confirm booking or cancel booking.
     """
     while True:
         try:
@@ -599,6 +627,11 @@ def find_booking_by_ref():
     result = db.bookings.find_one({"booking_reference": booking_ref})
     if result is not None:
         display_booking(result)
+        
+        choice = input("\nPress C to cancel booking.\n Press any other key to continue:").upper()
+        if choice == "C":
+            db.bookings.delete_one({"booking_reference": booking_ref})
+            
     else:
         print("Not found")
 
@@ -638,7 +671,7 @@ def save_booking_details(booking):
         db.bookings.insert_one(booking)
         add_booking_to_vehicle(booking["booking_reference"], booking["reg"])
         print("Booking Saved")
-        print("Booking reference number is " + booking["booking_reference"])
+        print("Booking reference number is " + str(booking["booking_reference"]))
         input("\nPress any key to continue...\n")
     except OperationFailure:
         print("oops ! Database error: Booking was not added")
@@ -659,6 +692,18 @@ def add_booking_to_vehicle(booking_number, registration):
         )
 
 
+def remove_booking_from_vehicle(booking_number, registration):
+    """
+    Adds the booking number to the vehicle
+    """
+
+    vehicle = find_vehicle_by_reg(registration)
+    booking_list = vehicle["bookings"]
+    booking_list.remove(booking_number)
+    update_result = db.vehicles.update_one(
+        {"reg": registration}, {"$set": {"bookings": booking_list}}
+        )
+
 def display_booking(booking_obj):
     """
     Dispalys a booking 
@@ -676,7 +721,7 @@ def display_booking(booking_obj):
     vehicle = find_vehicle_by_reg(reg)
     display_vehicle_summary(vehicle)
 
-
+        
 def find_customer(email_address):
     """
     Function to search for customer in DB by passing email address
