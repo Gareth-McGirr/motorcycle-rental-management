@@ -491,13 +491,31 @@ def create_booking():
         display_customer(this_customer)
         answer = (input("Is this correct (y/n) ? \n")).upper()
         if answer == 'Y':
-            # TO DO: validate the dates entered,
-            # try to convert to date object in specified foramt ?
+            # set new customer flag
             new_customer = False
+            # assign customer details returned from DB
             name = this_customer["name"]
-            tel_number = this_customer["email"]
-            start_date = input("Enter Start Date (dd/mm/yyyy): \n")
-            end_date = input("Enter Return Date (dd/mm/yyyy): \n")
+            tel_number = this_customer["tel_no"]
+           
+           # Ask user for dates and validate 
+            while True:
+                try:
+                    start_date = input("Enter Start Date (dd/mm/yyyy): \n")
+                    date_strt = datetime.strptime(start_date, '%d/%m/%Y')
+                    break
+                except ValueError:
+                    print("Invalid date entered !") 
+            while True:
+                try:
+                    end_date = input("Enter End Date (dd/mm/yyyy): \n")
+                    date_end = datetime.strptime(end_date, '%d/%m/%Y')
+
+                    if end_date < start_date:
+                        print("End date cannot be earlier than Start Date !")
+                        continue
+                    break
+                except ValueError:
+                    print("Invalid date entered !")
     else:
         while True:
             try:
@@ -507,27 +525,39 @@ def create_booking():
                 print("Phone number cannot contain letters !!")
 
         name = input("Enter Name: \n")
-        start_date = input("Enter Start Date (dd/mm/yyyy): \n")
-        end_date = input("Enter Return Date (dd/mm/yyyy): \n")
+        # Get a valid start and end date from user
+        while True:
+            try:
+                start_date = input("Enter Start Date (dd/mm/yyyy): \n")
+                date_strt = datetime.strptime(start_date, '%d/%m/%Y')
+                break
+            except ValueError:
+                print("Invalid date entered !") 
+        while True:
+            try:
+                end_date = input("Enter End Date (dd/mm/yyyy): \n")
+                date_end = datetime.strptime(end_date, '%d/%m/%Y')
+                if end_date < start_date:
+                    print("End date cannot be earlier than Start Date !")
+                    continue
+                break
+            except ValueError:
+                print("Invalid date entered !")
 
     # get booking number for this booking
-    # and generate next booking number to add to DB
+    # and generate next booking number to addupdate in DB
     result = db.booking_reference.find_one()
     booking_number = result["next_booking_reference"]
     next_booking_number = booking_number + 1
     db.booking_reference.update_one({}, {"$set": {"next_booking_reference": next_booking_number}})
-
-    # convert date strings to date objects
-    start_date_obj = datetime.strptime(start_date, '%d/%m/%Y')
-    end_date_obj = datetime.strptime(end_date, '%d/%m/%Y')
 
     this_booking = {
         "reg": registration,
         "name": name,
         "tel_no": tel_number,
         "email": email,
-        "start_date": start_date_obj,
-        "end_date": end_date_obj,
+        "start_date": date_strt,
+        "end_date": date_end,
         "booking_reference": booking_number
     }
     save_booking_details(this_booking)
