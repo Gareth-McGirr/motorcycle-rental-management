@@ -355,7 +355,8 @@ def check_availability_one_vehicle():
     # print message to user if available or not
     if available:
         print("Vehicle is available for those dates")
-        input("\nPress any key....\n")
+        choice = input("\nWould you like to make a booking\n")
+        create_booking(registration, date_strt, date_end)
     else:
         print("Not available for those dates")
         input("\nPress any key....\n")
@@ -460,7 +461,7 @@ def booking_menu():
     booking_menu()
 
 
-def create_booking():
+def create_booking(registration=None, start=None, end=None):
     """
     Function to get details of customer booking
     Function will ask for details and validate user input
@@ -473,16 +474,19 @@ def create_booking():
 
     # Chaeck that vehicle exists and display for
     # confirmation of correct vehicle
-    while True:
-        registration = (input("Enter vehicle registration: \n")).upper()
+    if registration is None:
+        while True:
+            registration = (input("Enter vehicle registration: \n")).upper()
+            this_vehicle = find_vehicle_by_reg(registration)
+            if this_vehicle is not None:
+                display_vehicle_summary(this_vehicle)
+                answer = input("Is this correct (y/n) ? \n")
+                if answer.upper() == 'Y':
+                    break
+            else:
+                print("Vehicle not found")
+    else:
         this_vehicle = find_vehicle_by_reg(registration)
-        if this_vehicle is not None:
-            display_vehicle_summary(this_vehicle)
-            answer = input("Is this correct (y/n) ? \n")
-            if answer.upper() == 'Y':
-                break
-        else:
-            print("Vehicle not found")
 
     # Check if customer with email exists and display details
     email = (input("Enter email: \n")).upper()
@@ -497,7 +501,41 @@ def create_booking():
             name = this_customer["name"]
             tel_number = this_customer["tel_no"]
            
-           # Ask user for dates and validate 
+            # Ask user for dates and validate
+            if start is None:
+                while True:
+                    try:
+                        start_date = input("Enter Start Date (dd/mm/yyyy): \n")
+                        date_strt = datetime.strptime(start_date, '%d/%m/%Y')
+                        break
+                    except ValueError:
+                        print("Invalid date entered !") 
+                while True:
+                    try:
+                        end_date = input("Enter End Date (dd/mm/yyyy): \n")
+                        date_end = datetime.strptime(end_date, '%d/%m/%Y')
+
+                        if end_date < start_date:
+                            print("End date cannot be earlier than Start Date !")
+                            continue
+                        break
+                    except ValueError:
+                        print("Invalid date entered !")
+            else:
+                date_strt = start
+                date_end = end
+    else:
+        while True:
+            try:
+                tel_number = int(input("Enter contact number: \n"))
+                break
+            except ValueError:
+                print("Phone number cannot contain letters !!")
+
+        name = input("Enter Name: \n")
+
+        if start is None:
+            # Get a valid start and end date from user
             while True:
                 try:
                     start_date = input("Enter Start Date (dd/mm/yyyy): \n")
@@ -509,40 +547,15 @@ def create_booking():
                 try:
                     end_date = input("Enter End Date (dd/mm/yyyy): \n")
                     date_end = datetime.strptime(end_date, '%d/%m/%Y')
-
                     if end_date < start_date:
                         print("End date cannot be earlier than Start Date !")
                         continue
                     break
                 except ValueError:
                     print("Invalid date entered !")
-    else:
-        while True:
-            try:
-                tel_number = int(input("Enter contact number: \n"))
-                break
-            except ValueError:
-                print("Phone number cannot contain letters !!")
-
-        name = input("Enter Name: \n")
-        # Get a valid start and end date from user
-        while True:
-            try:
-                start_date = input("Enter Start Date (dd/mm/yyyy): \n")
-                date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-                break
-            except ValueError:
-                print("Invalid date entered !") 
-        while True:
-            try:
-                end_date = input("Enter End Date (dd/mm/yyyy): \n")
-                date_end = datetime.strptime(end_date, '%d/%m/%Y')
-                if end_date < start_date:
-                    print("End date cannot be earlier than Start Date !")
-                    continue
-                break
-            except ValueError:
-                print("Invalid date entered !")
+        else:
+            date_strt = start
+            date_end = end
 
     # get booking number for this booking
     # and generate next booking number to addupdate in DB
