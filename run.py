@@ -65,8 +65,8 @@ def vehicle_menu():
         choice = input("Enter Choice: \n")
         if choice == "1":
             new_vehicle = get_new_vehicle_details()
-            # TO DO: get user to verify details before saving to DB
-            save_vehicle_details(new_vehicle)
+            if new_vehicle is not None:
+                save_vehicle_details(new_vehicle)
             break
         elif choice == "2":
             vehicle_update_menu()
@@ -98,6 +98,12 @@ def get_new_vehicle_details():
     Get vehicle details from user and return as a dictionary object
     """
     registration = (input("Enter vehicle registration: \n")).upper()
+    result = find_vehicle_by_reg(registration)
+    if result is not None:
+        print("Vehicle with this registration already exists in the system\n")
+        display_vehicle_summary(result)
+        input("\nPress any key to continue...\n")
+        return None
     make = (input("Enter make: \n")).upper()
     model = (input("Enter model: \n")).upper()
     while True:
