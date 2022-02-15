@@ -22,7 +22,6 @@ def main_menu():
     print("---------------")
     print("1. Vehicles")
     print("2. Bookings")
-    print("3. Reports")
     print("---------------")
     while True:
         try:
@@ -36,9 +35,6 @@ def main_menu():
             break
         elif choice == 2:
             booking_menu()
-            break
-        elif choice == 3:
-            report_menu()
             break
         else:
             print("Invalid choice !!!")
@@ -356,7 +352,8 @@ def check_availability_one_vehicle():
     if available:
         print("Vehicle is available for those dates")
         choice = input("\nWould you like to make a booking\n")
-        create_booking(registration, date_strt, date_end)
+        if choice.upper() == 'Y':
+            create_booking(registration, date_strt, date_end)
     else:
         print("Not available for those dates")
         input("\nPress any key....\n")
@@ -641,6 +638,7 @@ def save_booking_details(booking):
         db.bookings.insert_one(booking)
         add_booking_to_vehicle(booking["booking_reference"], booking["reg"])
         print("Booking Saved")
+        print("Booking reference number is " + booking["booking_reference"])
         input("\nPress any key to continue...\n")
     except OperationFailure:
         print("oops ! Database error: Booking was not added")
@@ -701,33 +699,6 @@ def display_customer(customer_obj):
     print(f"Name: {name}")
     print(f"Tel No: {phone_no}")
     print(f"Email: {email}")
-
-
-def report_menu():
-    """
-    Display report menu options
-
-    """
-    os.system('clear')
-    print("REPORT MENU")
-    print("---------------")
-    print("1. Todays Bookings")
-    print("2. Bike Service Report")
-    print("3. Sales Report")
-    print("0. Main Menu")
-    print("---------------")
-    choice = input("Enter Choice: \n")
-
-    if choice == "1":
-        print("Not Implemented")
-    elif choice == "2":
-        print("Not Implemented")
-    elif choice == "3":
-        print("Not Implemented")
-    elif choice == "0":
-        main_menu()
-    else:
-        print("Invalid choice !!!")
 
 
 def main():
