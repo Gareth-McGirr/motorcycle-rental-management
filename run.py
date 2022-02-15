@@ -326,6 +326,9 @@ def check_availability_one_vehicle():
         try:
             end_date = input("Enter End Date (dd/mm/yyyy): \n")
             date_end = datetime.strptime(end_date, '%d/%m/%Y')
+            if end_date < start_date:
+                print("End date cannot be earlier than Start Date !")
+                continue
             break
         except ValueError:
             print("Invalid date entered !")
@@ -375,6 +378,9 @@ def list_all_vehicles_available():
         try:
             end_date = input("Enter End Date (dd/mm/yyyy): \n")
             date_end = datetime.strptime(end_date, '%d/%m/%Y')
+            if end_date < start_date:
+                print("End date cannot be earlier than Start Date !")
+                continue
             break
         except ValueError:
             print("Invalid date entered !")
@@ -616,14 +622,18 @@ def display_booking(booking_obj):
     """
     Dispalys a booking 
     """
-    
+    print()
     booking_number = booking_obj["booking_reference"]
     name = booking_obj["name"]
     start = booking_obj["start_date"].strftime('%d/%m/%Y')
     end = booking_obj["end_date"].strftime('%d/%m/%Y')
+    reg = booking_obj["reg"]
+
 
     print(f"Ref: {booking_number} Name: {name}")
     print(f"Start: {start} End: {end}")
+    vehicle = find_vehicle_by_reg(reg)
+    display_vehicle_summary(vehicle)
 
 
 def find_customer(email_address):
