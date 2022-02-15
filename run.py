@@ -52,8 +52,6 @@ def vehicle_menu():
     print("2. Update")
     print("3. Remove")
     print("4. List All")
-    print("5. Check availabilty - One")
-    print("6. Check availabilty - All")
     print("0. Main Menu")
     print("---------------")
 
@@ -72,12 +70,6 @@ def vehicle_menu():
             break
         elif choice == "4":
             list_all_vehicles()
-            break
-        elif choice == "5":
-            check_availability_one_vehicle()
-            break
-        elif choice == "6":
-            list_all_vehicles_available()
             break
         elif choice == "0":
             main_menu()
@@ -431,6 +423,8 @@ def booking_menu():
     print("1. New Booking")
     print("2. List Bookings")
     print("3. Find Booking")
+    print("4. Check availabilty - One")
+    print("5. Check availabilty - All")
     print("0. Main Menu")
     print("---------------")
     while True:
@@ -450,6 +444,12 @@ def booking_menu():
         elif choice == 3:
             find_booking_by_ref()
             input("\nPress any key to continue...\n")
+            break
+        elif choice == 4:
+            check_availability_one_vehicle()
+            break
+        elif choice == 5:
+            list_all_vehicles_available()
             break
         elif choice == 0:
             main_menu()
