@@ -314,12 +314,22 @@ def check_availability_one_vehicle():
     display_vehicle_summary(vehicle)
     booking_number_list = vehicle["bookings"]
 
-    # Get the start and end date from user
-    start_date = input("Enter Start Date (dd/mm/yyyy): \n")
-    date_strt = datetime.strptime(start_date, '%d/%m/%Y')
-    end_date = input("Enter End Date (dd/mm/yyyy): \n")
-    date_end = datetime.strptime(end_date, '%d/%m/%Y')
-
+    # Get a valid start and end date from user
+    while True:
+        try:
+            start_date = input("Enter Start Date (dd/mm/yyyy): \n")
+            date_strt = datetime.strptime(start_date, '%d/%m/%Y')
+            break
+        except ValueError:
+            print("Invalid date entered !")
+   
+    while True:
+        try:
+            end_date = input("Enter End Date (dd/mm/yyyy): \n")
+            date_end = datetime.strptime(end_date, '%d/%m/%Y')
+            break
+        except ValueError:
+            print("Invalid date entered !")
     # inialize as available
     available = True    
     for booking_number in booking_number_list:
