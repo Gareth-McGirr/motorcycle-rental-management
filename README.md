@@ -138,6 +138,22 @@ As a future enhancement, I would like to add some basic functionality to calcula
 
 ### Logical Flow
 
+**Main Menu**
+
+![Main Menu](docs/flow/main_menu.JPG)
+
+**Vehicle Menu**
+
+![Vehicle Menu](docs/flow/vehicle_menu.JPG)
+
+**Vehicle Update Menu**
+
+![Vehicle Update Menu](docs/flow/vehicle_update_menu.JPG)
+
+**Booking Menu**
+
+![Booking Menu](docs/flow/booking_menu.JPG)
+
 ## Technologies
 
 ## Testing
