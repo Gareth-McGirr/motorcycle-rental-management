@@ -156,11 +156,34 @@ As a future enhancement, I would like to add some basic functionality to calcula
 
 ## Technologies
 
+* Python - Python was the main language used to build the application.
+    * Python packages used:
+        * pymongo - Used to connect to the MongoDB atlas from the application.
+* MongoDB - This was used as data storage in order to store the bike and booking information.
+
 ## Testing
 
 ### Functional Testing
 
+Below are the test execution of positive functional tests:
+
+![test_ss1](docs/testing/testing_1.JPG)
+
+![test_ss2](docs/testing/testing_2.JPG)
+
+![test_ss3](docs/testing/testing_3.JPG)
+
+![test_ss4](docs/testing/testing_4.JPG)
+
+Negative input validation testing was performed on all menu options to ensure correct input. All options behaved as expected, alerting the user of invalid inoput and then asking for input again.
+
 ### Pep8 Validation
+
+All python code was ran through pep8online.com validator and any warnings or errors were fixed. Code then validated successfully.
+
+In gitpod, warning was displayed by linter that env was imported but unused. This was being used by my env.py file during local development as it contained my database configuration variables so it was in fact used and the warning was ignored.
+
+![Pep8](docs/testing/pep8_validatation.PNG)
 
 ### Bugs and Fixes
 
