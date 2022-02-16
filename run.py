@@ -360,7 +360,6 @@ def check_availability_one_vehicle():
         input("\nPress any key....\n")
         return
 
-
     # Get a valid start and end date from user
     while True:
         try:
