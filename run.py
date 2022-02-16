@@ -1,3 +1,4 @@
+""" Import python modules """
 import os
 from datetime import datetime, timedelta
 from operator import itemgetter
@@ -84,6 +85,7 @@ def vehicle_menu():
     # return back to vehicle menu when other function is complete
     vehicle_menu()
 
+
 def get_service_history():
     """
     Find vehicle and display service history
@@ -103,10 +105,11 @@ def get_service_history():
             print(f"Description: {description}")
             print(f"Mileage: {mileage}")
         print(f"\n\nNext service due in: {next_service}")
-        input("\nPress any key to continue...\n")          
+        input("\nPress any key to continue...\n")
     else:
         print("Vehicle not found !")
         input("\nPress any key to continue...\n")
+
 
 def get_new_vehicle_details():
     """
@@ -180,6 +183,7 @@ def vehicle_update_menu():
         input("\nPress any key to continue...\n")
         vehicle_update_menu()
 
+
 def display_vehicle_summary(vehicle):
     """
     Display summary details of vehicle object
@@ -201,26 +205,34 @@ def vehicle_update_mileage(registration=None):
     """
     # if reg hasn't already been taken then get the reg to search for
     if registration is None:
-        registration = (input("Enter reg: \n")).upper()    
+        registration = (input("Enter reg: \n")).upper()
     result = find_vehicle_by_reg(registration)
     if result is not None:
         display_vehicle_summary(result)
         while True:
             try:
                 new_mileage = int(input("\nEnter new mileage: \n"))
-                if(new_mileage < result["mileage"]):
-                    print("New mileage should not be less than old mileage !!!")
+                if new_mileage < result["mileage"]:
+                    print("New mileage should not be less than old mileage !")
                     continue
                 break
             except ValueError:
                 print("Only whole numbers can be entered !")
-            
+
         mileage_since_last_updated = new_mileage - result["mileage"]
         print(f"\nMileage since last update is: {mileage_since_last_updated}")
-        new_service_due_distance = result["service_due_distance"] - mileage_since_last_updated
+        new_service_due_distance = (
+            result["service_due_distance"] - mileage_since_last_updated
+        )
         print(f"Service due in {new_service_due_distance} miles")
-        update_result = db.vehicles.update_one(
-            {"reg": registration}, {"$set": {"mileage": new_mileage, "service_due_distance": new_service_due_distance}})
+        try:
+            db.vehicles.update_one(
+                {"reg": registration}, {"$set": {
+                    "mileage": new_mileage,
+                    "service_due_distance": new_service_due_distance}}
+                )
+        except OperationFailure:
+            print("oops ! Database error, Mileage not updated")
         input("\nPress any key to continue...\n")
     else:
         print("\nVehicle not found !")
@@ -250,11 +262,19 @@ def vehicle_add_service():
                 "description": service_description
             }
             service_history_list.append(service_details)
-
-            update_result = db.vehicles.update_one({"reg": registration}, {"$set": {"service_due_distance": new_service_due_distance, "last_service_date": today, "service_history": service_history_list}})
+            try:
+                db.vehicles.update_one(
+                    {"reg": registration}, {"$set": {
+                        "service_due_distance": new_service_due_distance,
+                        "last_service_date": today,
+                        "service_history": service_history_list}}
+                        )
+            except OperationFailure:
+                print("oops ! Database error, Service details not added")
     else:
         print("Vehicle not found !")
         input("\nPress any key to continue...\n")
+
 
 def find_vehicle_by_reg(registration):
     """
@@ -274,6 +294,8 @@ def save_vehicle_details(vehicle):
     """
     try:
         db.vehicles.insert_one(vehicle)
+        print("New vehicle details saved.")
+        input("\nPress any key to continue...\n")
         return True
     except OperationFailure:
         print("oops ! Database error: Vehicle was not added")
@@ -336,7 +358,7 @@ def check_availability_one_vehicle():
             date_strt = datetime.strptime(start_date, '%d/%m/%Y')
             break
         except ValueError:
-            print("Invalid date entered !") 
+            print("Invalid date entered !")
     while True:
         try:
             end_date = input("Enter End Date (dd/mm/yyyy): \n")
@@ -348,20 +370,20 @@ def check_availability_one_vehicle():
         except ValueError:
             print("Invalid date entered !")
     # inialize as available
-    available = True    
+    available = True
     for booking_number in booking_number_list:
         # get the booking start and end date
         result = db.bookings.find_one({"booking_reference": booking_number})
         start = result["start_date"]
         end = result["end_date"]
-        # calculte number of days for range   
+        # calculte number of days for range
         period = abs((end - start).days)
         daterange = []
         # add each date in the range to a list
         for day in range(period):
             my_date = (start + timedelta(days=day))
             daterange.append(my_date)
-        # loop through each date in the list 
+        # loop through each date in the list
         for ele in daterange:
             # checking for date in range
             if ele >= date_strt and ele <= date_end:
@@ -382,7 +404,7 @@ def list_all_vehicles_available():
     """
     list all available vehicles within date range
     """
-   
+
     # Get a valid start and end date from user
     while True:
         try:
@@ -390,7 +412,7 @@ def list_all_vehicles_available():
             date_strt = datetime.strptime(start_date, '%d/%m/%Y')
             break
         except ValueError:
-            print("Invalid date entered !") 
+            print("Invalid date entered !")
     while True:
         try:
             end_date = input("Enter End Date (dd/mm/yyyy): \n")
@@ -416,7 +438,8 @@ def list_all_vehicles_available():
             available = True
             for booking_number in booking_number_list:
                 # get the booking
-                result = db.bookings.find_one({"booking_reference": booking_number})
+                result = db.bookings.find_one(
+                    {"booking_reference": booking_number})
                 start = result["start_date"]
                 end = result["end_date"]
                 # calculte number of days for range
@@ -524,7 +547,7 @@ def create_booking(registration=None, start=None, end=None):
             # assign customer details returned from DB
             name = this_customer["name"]
             tel_number = this_customer["tel_no"]
-           
+
             # Ask user for dates and validate
             if start is None:
                 while True:
@@ -533,14 +556,14 @@ def create_booking(registration=None, start=None, end=None):
                         date_strt = datetime.strptime(start_date, '%d/%m/%Y')
                         break
                     except ValueError:
-                        print("Invalid date entered !") 
+                        print("Invalid date entered !")
                 while True:
                     try:
                         end_date = input("Enter End Date (dd/mm/yyyy): \n")
                         date_end = datetime.strptime(end_date, '%d/%m/%Y')
 
                         if end_date < start_date:
-                            print("End date cannot be earlier than Start Date !")
+                            print("End date cannot be before Start Date !")
                             continue
                         break
                     except ValueError:
@@ -566,7 +589,7 @@ def create_booking(registration=None, start=None, end=None):
                     date_strt = datetime.strptime(start_date, '%d/%m/%Y')
                     break
                 except ValueError:
-                    print("Invalid date entered !") 
+                    print("Invalid date entered !")
             while True:
                 try:
                     end_date = input("Enter End Date (dd/mm/yyyy): \n")
@@ -586,7 +609,8 @@ def create_booking(registration=None, start=None, end=None):
     result = db.booking_reference.find_one()
     booking_number = result["next_booking_reference"]
     next_booking_number = booking_number + 1
-    db.booking_reference.update_one({}, {"$set": {"next_booking_reference": next_booking_number}})
+    db.booking_reference.update_one(
+        {}, {"$set": {"next_booking_reference": next_booking_number}})
 
     this_booking = {
         "reg": registration,
@@ -609,7 +633,8 @@ def create_booking(registration=None, start=None, end=None):
     else:
         booking_list = this_customer["bookings"]
         booking_list.append(booking_number)
-        db.customers.update_one({"email": email}, {"$set": {"bookings": booking_list}})
+        db.customers.update_one(
+            {"email": email}, {"$set": {"bookings": booking_list}})
     return
 
 
@@ -627,11 +652,10 @@ def find_booking_by_ref():
     result = db.bookings.find_one({"booking_reference": booking_ref})
     if result is not None:
         display_booking(result)
-        
-        choice = input("\nPress C to cancel booking.\n Press any other key to continue:").upper()
+        print("\nPress C to cancel booking.\n")
+        choice = input("\nPress any other key to continue:").upper()
         if choice == "C":
             db.bookings.delete_one({"booking_reference": booking_ref})
-            
     else:
         print("Not found")
 
@@ -648,17 +672,21 @@ def find_bookings_in_range():
             break
         except ValueError:
             print("You didn't enter a number !")
-            continue  
+            continue
     now = datetime.now()
     print(f"Todays date is: {now.strftime('%d/%m/%Y')}")
     end_date = now + timedelta(days=days)
     print(f"Future date is: {end_date.strftime('%d/%m/%Y')}")
     bookings = list(db.bookings.find({}))
-    
+
     print("Bookings in order of date:\n")
     bookings.sort(key=itemgetter('start_date'), reverse=False)
     for booking in bookings:
-        if booking["start_date"] < end_date and booking["start_date"] > now - timedelta(days=1):
+        if (
+            booking["start_date"] < end_date
+            ) and (
+                booking["start_date"] > now - timedelta(days=1)
+                ):
             display_booking(booking)
             print()
 
@@ -671,7 +699,8 @@ def save_booking_details(booking):
         db.bookings.insert_one(booking)
         add_booking_to_vehicle(booking["booking_reference"], booking["reg"])
         print("Booking Saved")
-        print("Booking reference number is " + str(booking["booking_reference"]))
+        print("Booking reference number is " +
+              str(booking["booking_reference"]))
         input("\nPress any key to continue...\n")
     except OperationFailure:
         print("oops ! Database error: Booking was not added")
@@ -687,9 +716,12 @@ def add_booking_to_vehicle(booking_number, registration):
     vehicle = find_vehicle_by_reg(registration)
     booking_list = vehicle["bookings"]
     booking_list.append(booking_number)
-    update_result = db.vehicles.update_one(
-        {"reg": registration}, {"$set": {"bookings": booking_list}}
-        )
+    try:
+        db.vehicles.update_one(
+            {"reg": registration}, {"$set": {"bookings": booking_list}}
+            )
+    except OperationFailure:
+        print("oops ! Database error, Booking not saved to vehicle")
 
 
 def remove_booking_from_vehicle(booking_number, registration):
@@ -700,13 +732,17 @@ def remove_booking_from_vehicle(booking_number, registration):
     vehicle = find_vehicle_by_reg(registration)
     booking_list = vehicle["bookings"]
     booking_list.remove(booking_number)
-    update_result = db.vehicles.update_one(
-        {"reg": registration}, {"$set": {"bookings": booking_list}}
+    try:
+        db.vehicles.update_one(
+            {"reg": registration}, {"$set": {"bookings": booking_list}}
         )
+    except OperationFailure:
+        print("oops ! Database error, Booking not removed from vehicle")
+
 
 def display_booking(booking_obj):
     """
-    Dispalys a booking 
+    Dispalys a booking
     """
     print()
     booking_number = booking_obj["booking_reference"]
@@ -715,13 +751,12 @@ def display_booking(booking_obj):
     end = booking_obj["end_date"].strftime('%d/%m/%Y')
     reg = booking_obj["reg"]
 
-
     print(f"Ref: {booking_number} Name: {name}")
     print(f"Start: {start} End: {end}")
     vehicle = find_vehicle_by_reg(reg)
     display_vehicle_summary(vehicle)
 
-        
+
 def find_customer(email_address):
     """
     Function to search for customer in DB by passing email address
