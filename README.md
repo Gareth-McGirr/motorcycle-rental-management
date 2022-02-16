@@ -134,6 +134,8 @@ IMPREMENTATION
 
 ### Features Left to Implement
 
+As a future enhancement, I would like to add some basic functionality to calculate pricing and keep track of sales. I would also like to implement reporting to the application that will allow users to view sales records.
+
 ### Logical Flow
 
 ## Technologies
