@@ -660,6 +660,7 @@ def find_booking_by_ref():
         choice = input("\nPress any other key to continue:").upper()
         if choice == "C":
             db.bookings.delete_one({"booking_reference": booking_ref})
+            print("Booking deleted")
     else:
         print("Not found")
 
