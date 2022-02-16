@@ -196,6 +196,10 @@ IMPREMENTATION
 
 This can be seen on all the menu screenshots above.
 
+**Error Handling**
+
+Error handling was implemented throughout the application with the use of try/except statements to handle exceptions raised for things like, None type values, Database connection errors, Value errors.
+
 ### Features Left to Implement
 
 As a future enhancement, I would like to add some basic functionality to calculate pricing and keep track of sales. I would also like to implement reporting to the application that will allow users to view sales records.
