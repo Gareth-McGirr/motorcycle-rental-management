@@ -189,6 +189,54 @@ In gitpod, warning was displayed by linter that env was imported but unused. Thi
 
 ## Deployment
 
+### Version Control
+The site was created using the Visual Studio Code editor and pushed to github to the remote repository â€˜motorcycle-rental-managementâ€™.
+
+The following git commands were used throughout development to push code to the remote repo:
+
+```git add <file>``` - This command was used to add the file(s) to the staging area before they are committed.
+
+```git commit -m â€œcommit messageâ€``` - This command was used to commit changes to the local repository queue ready for the final step.
+
+```git push``` - This command was used to push all committed code to the remote repository on github.
+
+### MongoDB Setup
+
+* Navigate to [MongoDB](https://www.mongodb.com/) and create an account.
+* Verify account by clicking the verification link emailed to you on the email you signed up with.
+* Log in with newly created account.
+* On the top right under projects, click the drop down and select new project.
+* Name the project and click next, filling in subsuqent inputs as desired.
+* If prompted, whitelist IP by inputting (0.0.0.0/0) to allow access from anywhere.
+* Once the project is created, from the left menu, select Database Access and create a new user with Read and Write access. It's best practice not to use special characters in the password as these will need to be escaped.
+* Once a user has been created, you can click the 'Databases' under deployment and then click connect.
+* Select the Connect you application option and this will provide you with a Mongo URI connection string that can be used in Heroku or an env file locally.
+
+### Heroku Deployment
+
+The below steps were followed to deploy this project to Heroku:
+
+* Go to Heroku and click "New" to create a new app.
+* Choose an app name and region region, click "Create app".
+* Go to "Settings" and navigate to Config Vars. Add the following config variables:
+    * PORT : 8000
+    * MONGO_URI : (Mongo URI connection string from MongoDB setup)
+* Navigate to Buildpacks and add buildpacks for Python and NodeJS (in that order).
+* Navigate to "Deploy". Set the deployment method to Github and enter repository name and connect.
+* Scroll down to Manual Deploy, select "main" branch and click "Deploy Branch".
+* The app will now be deployed to heroku
+
+TODO - Live Link
+
+### Clone Locally
+
+* Open IDE of choice and type the following into the terminal:
+    * ```git clone https://github.com/Gareth-McGirr/motorcycle-rental-management.git```
+* Project will now be cloned locally.
+
+Note: If you want to use the application, follow the steps in the [MongoDB Setup](#MongoDB-Setup) first then create an env.py file with the following variable:
+* MONGO_URI : Mongo URI connection String
+
 ## Credits
 
 ### Code
