@@ -9,10 +9,11 @@
     * [Target Audience](#Target-Audience)
     * [User stories](#User-Stories)
     * [Features Planned](#Features-Planned)
-- [Structure](#Structure)
-    * [Logical Flow](#Logical-Flow)
+* [Structure](#Structure)
     * [Features](#Features)
     * [Features left to Implement](#Features-Left-to-Implement)
+* [Logical Flow](#Logical-Flow)
+* [Database Design](#Database-Design)
 * [Technologies](#Technologies)
 * [Testing](#Testing)
     * [Functional Testing](#Functional-Testing)
@@ -199,7 +200,7 @@ This can be seen on all the menu screenshots above.
 
 As a future enhancement, I would like to add some basic functionality to calculate pricing and keep track of sales. I would also like to implement reporting to the application that will allow users to view sales records.
 
-### Logical Flow
+## Logical Flow
 
 **Main Menu**
 
@@ -216,6 +217,32 @@ As a future enhancement, I would like to add some basic functionality to calcula
 **Booking Menu**
 
 ![Booking Menu](docs/flow/booking_menu.JPG)
+
+## Database Design
+
+MongoDB was used to store the vehicles and bookings. There are 4 collections.
+
+**Collection 1 - vehicles**
+
+This collection was used to store vehicle details. Objects inserted to collection with the following fields and types:
+
+![Vehicle Collection](docs/screenshots/vehicles_mongo.PNG)
+
+**Collection 2 - customers**
+
+This collection was used to store customer details so when creating a new booking, if a customer exists with the email input, then the user is able to save time by using the existing customer. Objects inserted to the collection with the following fields and types:
+
+![Customer Collection](docs/screenshots/customers_mongo.PNG)
+
+**Collection 3 - bookings**
+
+This collection is used to store booking information. Objects inserted into the collection with the following fields and types:
+
+![Bookings Collection](docs/screenshots/bookings_mongo.PNG)
+
+**Collection 4 - booking_reference**
+
+This collection was used to generate the booking reference numbers. It's only purpose is to store the booking reference number so that it can be read and updated by 1 for the next booking.
 
 ## Technologies
 
