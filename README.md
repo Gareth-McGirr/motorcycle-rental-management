@@ -186,6 +186,12 @@ In gitpod, warning was displayed by linter that env was imported but unused. Thi
 
 ### Bugs and Fixes
 
+Vehicles with the same reg were able to be added. A fix was implemented to ensure that duplicate vehicles with the same registration could not be added.
+
+Date validations had to be added that the end date was after the start date in several functions as it allowed a user to input an end date that was before the start date.
+
+Validation was implemented to ensure correct date format was input as this was causing errors when an invalid format was used.
+
 ## Deployment
 
 ### Version Control
