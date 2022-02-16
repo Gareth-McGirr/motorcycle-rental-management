@@ -171,9 +171,17 @@ Find Booking
 
 Cancel Booking
 
+![Cancel Booking](docs/screenshots/cancel_booking.PNG)
+
 Check Availability - One
 
+![Check Availability - Unavailable](docs/screenshots/check_availability_one_unavailable.PNG)
+
+![Check Availability - Available](docs/screenshots/check_availability_one.PNG)
+
 Check Availability - All
+
+![Check Availability - All](docs/screenshots/check_availability_all.PNG)
 
 USER STORY
 
