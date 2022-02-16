@@ -115,6 +115,8 @@ Service History
 
 List All
 
+![List all](docs/screenshots/list_all_vehicles.PNG)
+
 * Vehicle Update Menu
     * When vehicle update menu has been selected, the following menu options appear:
         * 1 - Add new milage - This will allow user to find vehicle and update milage. This also sets the next service due field.
