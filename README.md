@@ -73,6 +73,8 @@ IMPLEMENTATION
     * The user must input a correct number corresponding to each menu or they will be alerted of an inccorect choice and the menu will be presented again.
     * This feature will allow the user to easily access the sub menus to each category in order to perform the operations needed.
 
+![Main Menu](docs/screenshots/main_menu.PNG)
+
 USER STORY
 
 `
@@ -95,12 +97,42 @@ IMPLEMENTATION
     * The user must input a correct number corresponding to each menu or they will be alerted of an inccorect choice and the menu will be presented again.
     * This feature will allow the user to easily view, add, edit and delete vehicles. 
 
+Vehicle Menu
+
+![Vehicle Menu](docs/screenshots/vehicle_menu.PNG)
+
+Add new
+
+![Add new](docs/screenshots/add_new.PNG)
+
+Remove
+
+![Remove](docs/screenshots/remove_vehicle.PNG)
+
+Service History
+
+![Service History](docs/screenshots/service_history.PNG)
+
+List All
+
 * Vehicle Update Menu
     * When vehicle update menu has been selected, the following menu options appear:
         * 1 - Add new milage - This will allow user to find vehicle and update milage. This also sets the next service due field.
         * 2 - Add service - This will allow the user to find vehicle and add new service details.
-        * 3 - Back to vehicle menu -0 This will allow the user to go back to the vehicle menu.
+        * 3 - Back to vehicle menu - This will allow the user to go back to the vehicle menu.
         * 0 - Main Menu - This option will return the user to the main menu.
+
+Update Menu
+
+![Vehicle Update Menu](docs/screenshots/vehicle_update_menu.PNG)
+
+Add new Milage
+
+![Add new milage](docs/screenshots/add_new_milage.PNG)
+
+Add service
+
+![Add service](docs/screenshots/add_new_service.PNG)
 
 USER STORY
 
@@ -121,6 +153,26 @@ IMPLEMENTATION
     * The user must input a correct number corresponding to each menu or they will be alerted of an inccorect choice and the menu will be presented again.
     * This feature will allow the user to easily view, add and search for a booking.
 
+![Booking Menu](docs/screenshots/booking_menu.PNG)
+
+New booking
+
+![New Booking](docs/screenshots/add_booking.PNG)
+
+List Bookings
+
+![List Bookings](docs/screenshots/list_bookings.PNG)
+
+Find Booking
+
+![Find Booking](docs/screenshots/find_booking.PNG)
+
+Cancel Booking
+
+Check Availability - One
+
+Check Availability - All
+
 USER STORY
 
 `
@@ -130,6 +182,8 @@ As a User, I would like to be able to return to the main menu without having to 
 IMPREMENTATION
 * All sub menus will have an option to return to the main menu, this will typically be 0.
 * This will allow the user to return to the main menu if they selected the wrong option or are finished with the particular menu.
+
+This can be seen on all the menu screenshots above.
 
 ### Features Left to Implement
 
