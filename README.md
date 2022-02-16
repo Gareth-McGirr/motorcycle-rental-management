@@ -1,6 +1,6 @@
 # Motorcycle Rental Management
 
-TODO Gif of live site
+![GIF of App](docs/screenshots/app.gif)
 
 ## Table Of Contents
 
@@ -223,6 +223,7 @@ As a future enhancement, I would like to add some basic functionality to calcula
     * Python packages used:
         * pymongo - Used to connect to the MongoDB atlas from the application.
 * MongoDB - This was used as data storage in order to store the bike and booking information.
+* Screen-o-matic - This was used to screen record the Gif for the readme. It was originally an MP4 and ezgif.com was used to convert to GIF format.
 
 ## Testing
 
