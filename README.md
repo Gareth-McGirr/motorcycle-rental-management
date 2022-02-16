@@ -1,31 +1,65 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# Motorcycle Rental Management
 
-Welcome Gareth-McGirr,
+TODO Gif of live site
 
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **August 17, 2021**
+## Table Of Contents
 
-## Reminders
+* [Introduction](#Introduction)
+    * [Site Goals](#Site-Goals)
+    * [Target Audience](#Target-Audience)
+    * [User stories](#User-Stories)
+    * [Features Planned](#Features-Planned)
+- [Structure](#Structure)
+    * [Logical Flow](#Logical-Flow)
+    * [Features](#Features)
+    * [Features left to Implement](#Features-Left-to-Implement)
+* [Technologies](#Technologies)
+* [Testing](#Testing)
+    * [Functional Testing](#Functional-Testing)
+    * [Pep8 Validation](#Pep8-Validation)
+    * [Bugs and Fixes](#Bugs-and-Fixes)
+* [Deployment](#Deployment)
+    * [Version Control](#Version-Control)
+    * [MongoDB Setup](#MongoDB-Setup)
+    * [Heroku Deployment](#Heroku-Deployment)
+    * [Clone Locally](Clone-Locally)
+* [Credits](#Credits)
+  * [Content](#Content)
+  * [Acknowledgements](#Acknowledgements)
 
-* Your code must be placed in the `run.py` file
-* Your dependencies must be placed in the `requirements.txt` file
-* Do not edit any of the other files or your code may not deploy properly
+## Introduction
 
-## Creating the Heroku app
+This project was created in order for small businesses to easily keep track of their Vehicle rentals. It will allow them to keep track of vehicle and bookings information as well as update them.
 
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
 
-1. `heroku/python`
-2. `heroku/nodejs`
+### Site Goals
 
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
+### Target Audience
 
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
+### User Stories
 
-Connect your GitHub repository and deploy as normal.
+### Features Planned
 
-## Constraints
+## Structure
 
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
+### Logical Flow
 
------
-Happy coding!
+### Features Left to Implement
+
+## Technologies
+
+## Testing
+
+### Functional Testing
+
+### Pep8 Validation
+
+### Bugs and Fixes
+
+## Deployment
+
+## Credits
+
+### Code
+
+### Acknowledgements
