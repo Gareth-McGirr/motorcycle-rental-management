@@ -31,12 +31,21 @@ TODO Gif of live site
 
 This project was created in order for small businesses to easily keep track of their Vehicle rentals. It will allow them to keep track of vehicle and bookings information as well as update them.
 
-
 ### Site Goals
+
+* Provide a simple application to allow the site owner to keep track of vehicles, bookings and maintenance for their rental business.
 
 ### Target Audience
 
+* Small vehicle rental companies that want to keep track of stock, bookings and view daily reports.
+
 ### User Stories
+
+* As a User, I would like to be able to easily find the various menus so that I can view information or add / edit records.
+* As a User, I would like to be able to manage my vehicles so that I can easily keep track of what vehicles I have available and edit / remove as neccessary.
+* As a User, I would like to be able to manage bookings so that I can add, edit, delete and find customer bookings with ease.
+* As a User, I would like to be able to view sevice records so I can see estimate when a new service is due.
+* As a User, I would like to be able to return to the main menu without having to restart the application.
 
 ### Features Planned
 
