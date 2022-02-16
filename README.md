@@ -25,7 +25,6 @@ TODO Gif of live site
     * [Clone Locally](Clone-Locally)
 * [Credits](#Credits)
   * [Content](#Content)
-  * [Acknowledgements](#Acknowledgements)
 
 ## Introduction
 
@@ -241,4 +240,12 @@ Note: If you want to use the application, follow the steps in the [MongoDB Setup
 
 ### Code
 
-### Acknowledgements
+[Youtube tutorial](https://www.youtube.com/watch?v=qWYx5neOh2s) - This youtube tutorial was used as a crash course on mongodb for all database functionality used within the project.
+
+[Check date range](https://www.geeksforgeeks.org/python-program-to-check-date-in-date-range/) - This tutorial was used to check if a date was within a date range.
+
+[Create Date Range](https://www.delftstack.com/howto/python/create-a-range-of-dates-in-python/) - This tutorial was used to create a date range.
+
+[Sorting dictionary values](https://stackoverflow.com/questions/652291/sorting-a-list-of-dictionary-values-by-date-in-python/652347) - This stackoverflow post was used in order to sort my dictionary values by date.
+
+W3C tutorials were used as a reference for python functions throughout this project.
