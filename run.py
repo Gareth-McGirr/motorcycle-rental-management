@@ -43,7 +43,9 @@ def main_menu():
 
 def vehicle_menu():
     """
-    Display Vehicle menu option
+    Display Vehicle menu options. Take user input
+    and call next functions. If invalid input, show
+    error and ask for input again.
     """
 
     os.system('clear')
@@ -88,7 +90,8 @@ def vehicle_menu():
 
 def get_service_history():
     """
-    Find vehicle and display service history
+    Find vehicle and display service history.
+    If vehicle not found, show error message.
     """
     registration = (input("Enter reg: \n")).upper()
     result = find_vehicle_by_reg(registration)
@@ -155,7 +158,8 @@ def get_new_vehicle_details():
 
 def vehicle_update_menu():
     """
-    Display update vehicle details menu and call functions for updates
+    Display update vehicle details menu and call functions for updates.
+    If invalid input, show error and ask for input again.
     """
 
     os.system('clear')
@@ -186,7 +190,7 @@ def vehicle_update_menu():
 
 def display_vehicle_summary(vehicle):
     """
-    Display summary details of vehicle object
+    Display summary details of vehicle.
     """
     reg = vehicle["reg"]
     make = vehicle["make"]
