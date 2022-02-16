@@ -352,8 +352,14 @@ def check_availability_one_vehicle():
     """
     registration = (input("Enter reg: \n")).upper()
     vehicle = find_vehicle_by_reg(registration)
-    display_vehicle_summary(vehicle)
-    booking_number_list = vehicle["bookings"]
+    if vehicle is not None:
+        display_vehicle_summary(vehicle)
+        booking_number_list = vehicle["bookings"]
+    else:
+        print("Vehicle not found")
+        input("\nPress any key....\n")
+        return
+
 
     # Get a valid start and end date from user
     while True:
