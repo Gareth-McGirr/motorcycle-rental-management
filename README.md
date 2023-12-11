@@ -2,7 +2,7 @@
 
 ![GIF of App](docs/screenshots/app.gif)
 
-![GIF of App](docs/screenshots/nav-capture.gif.mp4)
+![GIF of App](docs/screenshots/nav-capture.gif)
 
 
 ## Table Of Contents
