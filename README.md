@@ -2,6 +2,9 @@
 
 ![GIF of App](docs/screenshots/app.gif)
 
+![GIF of App](docs/screenshots/nav-capture.gif.mp4)
+
+
 ## Table Of Contents
 
 * [Introduction](#Introduction)
